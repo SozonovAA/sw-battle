@@ -2,7 +2,6 @@
 #include <memory>
 
 #include "IUnit.hpp"
-#include "UnitTypes.hpp"
 
 namespace sw::units {
 

@@ -17,7 +17,9 @@
 #include <IO/EventLogs/UnitDied.hpp>
 #include <IO/EventLogs/UnitAttacked.hpp>
 
-#include <Units/UnitBuilder.hpp>
+#include "Units/UnitBuilder.hpp"
+#include "Map/Map.hpp"
+
 #include <vector>
 
 int main(int argc, char** argv)
@@ -48,9 +50,6 @@ int main(int argc, char** argv)
 		return false;
 	});
 
-	auto war = warBuilder.create_unit(0);
-	auto arch = archBuilder.create_unit(0);
-
 	std::vector<std::unique_ptr<units::IUnit>> unitsOnMap;
 	for(int i = 0; i < 10; ++i)
 	{
@@ -58,8 +57,18 @@ int main(int argc, char** argv)
 		unitsOnMap.emplace_back(archBuilder.create_unit(i + 10));
 	}
 
-	for(auto& unit : unitsOnMap)
-		unit->march_process();
+
+    // Создаем объект карты размером 5x5
+    map::Map<units::IUnit> map(5, 5);
+	std::cout << map;
+	
+	map.addUnit(0, 2, unitsOnMap[0]->clone());
+	map.addUnit(4, 2, unitsOnMap[1]->clone());
+	std::cout << map;
+
+
+	// for(auto& unit : unitsOnMap)
+	// 	unit->march_process();
 	
 	// if (argc != 2) {
 	// 	throw std::runtime_error("Error: No file specified in command line argument");

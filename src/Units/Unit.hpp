@@ -2,6 +2,7 @@
 #include <cstdint>
 
 #include "UnitBuilder.hpp"
+#include "../Map/Coords.hpp"
 
 namespace sw::units {
 class Unit : public IUnit
@@ -21,13 +22,14 @@ class Unit : public IUnit
     virtual bool march_process() override;
     virtual void set_march(unsigned x, unsigned y) override;
     virtual std::unique_ptr<IUnit> clone() const override;
+    virtual UnitClass get_class() const override;
 
     template<UnitClass U, class T> friend class UnitBuilder;
 
     protected:
     const UnitClass _type;
     const unsigned _id;
-    unsigned _x = 0, _y = 0;
+    map::Point coord;
     params_storage_type _params;
     //todo: special march method
     actions_storage_type _priority_actions_storage;
