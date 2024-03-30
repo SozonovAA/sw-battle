@@ -4,26 +4,15 @@
 namespace sw::map {
 
 struct Point {
-    double x;
-    double y;
+    unsigned x_;
+    unsigned y_;
 
-    Point() : x(0.0), y(0.0) {}
+    Point() : x_(0), y_(0) {}
 
-    Point(double x_val, double y_val) : x(x_val), y(y_val) {}
-
-    std::string print() const {
-        std::string s;
-        s.reserve(20);
-        s.append("Point: (");
-        s.append(std::to_string(x));
-        s.append(", ");
-        s.append(std::to_string(y));
-        s.append(")");
-        return s;
-    }
+    Point(unsigned x_val, unsigned y_val) : x_(x_val), y_(y_val) {}
 
     friend std::ostream& operator<<(std::ostream& os, const Point& point) {
-        os << "Point: (" << point.x << ", " << point.y << ")";
+        os << "Point: (" << point.x_ << ", " << point.y_ << ")";
         return os;
     }
 };

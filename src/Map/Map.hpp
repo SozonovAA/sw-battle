@@ -2,10 +2,8 @@
 
 #include <iomanip>
 
-#include "../Units/IUnit.hpp"
-
+#include <cmath>
 namespace sw::map {
-
 // Класс для хранения карты
 template<class EntityT>
 class Map {
@@ -13,43 +11,69 @@ public:
     Map(unsigned rows, unsigned cols) : rows_(rows), cols_(cols) {
         grid_ = std::vector<std::vector<std::shared_ptr<EntityT>>>(rows, std::vector<std::shared_ptr<EntityT>>(cols, nullptr));
     }
-
-    // Метод для добавления объекта на карту по указанным координатам
+    
     int addUnit(unsigned x, unsigned y, std::shared_ptr<EntityT> unit) {
-        if (x >= rows_ || y >= cols_) {
-            return -1; // Код ошибки: неверные координаты
-        }
+        if (x >= rows_ || y >= cols_)
+            return -1;
 
-        if (grid_[x][y]) {
-            return -2; // Код ошибки: ячейка уже занята
-        }
-
+        if (grid_[x][y])
+            return -2;
+        
         grid_[x][y] = unit;
-        return 0; // Успешное добавление
+        return 0;
     }
 
-    // Метод для получения копии юнита по заданным координатам
-    std::shared_ptr<EntityT> getUnit(int x, int y) const {
-        if (x < 0 || x >= rows_ || y < 0 || y >= cols_) {
-            return nullptr; // Возвращаем nullptr, если координаты неверные
-        }
-
-        return grid_[x][y]; // Возвращаем указатель на юнит в заданных координатах
+    std::shared_ptr<EntityT> getUnit(unsigned x, unsigned y) const {
+        if (x >= rows_ || y >= cols_) 
+            return nullptr;
+        
+        return grid_[x][y];
     }
 
+    int moveUnit(unsigned fromX, unsigned fromY, unsigned toX, unsigned toY) {
+        if (fromX >= rows_ || fromY >= cols_ || toX >= rows_ || toY >= cols_)
+            return -1;
 
-    // Перегрузка оператора вывода для вывода карты в поток
-    friend std::ostream& operator<<(std::ostream& os, const Map& map) {
-	    os << "---------------" << std::endl;
-        for (int i = 0; i < map.rows_; ++i) {
-            for (int j = 0; j < map.cols_; ++j) {
-                if (const auto entity = map.grid_[i][j]) {
-                    os << std::setw(2)  << *entity; // Если ячейка занята, выводим "X"
-                } else {
-                    os << std::setw(2) << "."; // Если ячейка пуста, выводим "."
+        if (!grid_[fromX][fromY])
+            return -2;
+
+        if (grid_[toX][toY])
+            return -3;
+
+        grid_[toX][toY] = std::move(grid_[fromX][fromY]);
+        return 0;
+    }
+
+    // Метод для возвращения всех объектов в радиусе определенного количества клеток вокруг юнита
+    std::vector<std::shared_ptr<EntityT>> getUnitsAround(unsigned x, unsigned y, unsigned radius) const {
+        std::vector<std::shared_ptr<EntityT>> units;
+
+        for (unsigned i = std::max(0u, x - radius); i <= std::min(rows_ - 1, x + radius); ++i) {
+            for (unsigned j = std::max(0u, y - radius); j <= std::min(cols_ - 1, y + radius); ++j) {
+                if (grid_[i][j] && ((x - i) + (y - j)) <= radius) {
+                    units.push_back(grid_[i][j]);
                 }
             }
-            os << std::endl; // Разделяем строки
+        }
+
+        return units;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Map& map) {
+	    os << "---------------" << std::endl;
+        for (int i = 0; i < map.rows_; ++i) 
+        {
+            for (int j = 0; j < map.cols_; ++j) 
+            {
+                if (const auto entity = map.grid_[j][i]) 
+                {
+                    os << std::setw(2)  << *entity;
+                } else 
+                {
+                    os << std::setw(2) << ".";
+                }
+            }
+            os << std::endl;
         }
 	    os << "---------------" << std::endl;
         return os;
@@ -59,4 +83,5 @@ private:
     const unsigned cols_;
     std::vector<std::vector<std::shared_ptr<EntityT>>> grid_;
 };
+
 } // sw::map 
