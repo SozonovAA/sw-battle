@@ -1,3 +1,4 @@
+#include "Units/Unit.hpp"
 #include <IO/System/CommandParser.hpp>
 #include <IO/System/PrintDebug.hpp>
 #include <iostream>
@@ -16,11 +17,15 @@
 #include <IO/EventLogs/UnitDied.hpp>
 #include <IO/EventLogs/UnitAttacked.hpp>
 
+#include <Units/UnitBuilder.hpp>
 
 int main(int argc, char** argv)
 {
 	using namespace sw;
 
+	units::UnitBuilder<units::UnitClass::WAR> warBuilder;
+	auto war = warBuilder.create_unit(0);
+	
 	if (argc != 2) {
 		throw std::runtime_error("Error: No file specified in command line argument");
 	}
