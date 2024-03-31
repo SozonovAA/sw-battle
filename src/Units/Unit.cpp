@@ -2,23 +2,19 @@
 #include <memory>
 namespace sw::units {
 
-bool Unit::march_process()
+std::shared_ptr<mngr::cmd::IUnitCommand> Unit::process()
 {
-    bool res;
-
     for(const auto& it : _priority_actions_storage)
     {
-        if(it.second(*this, false))
-            break;
+        if(auto ptr = it.second(*this, false))
+            return ptr;
     }
-
-    //todo: compare coordinates with aims
-    return res;
+    return std::shared_ptr<mngr::cmd::IUnitCommand> ();
 }
 
-void Unit::set_march(unsigned x, unsigned y)
+void Unit::set_march(map::Point aim)
 {
-
+    _coord = aim;
 }
 
 std::unique_ptr<IUnit> Unit::clone() const

@@ -1,4 +1,4 @@
-#include "Units/Unit.hpp"
+
 #include <IO/System/CommandParser.hpp>
 #include <IO/System/PrintDebug.hpp>
 #include <iostream>
@@ -16,59 +16,20 @@
 #include <IO/EventLogs/UnitMoved.hpp>
 #include <IO/EventLogs/UnitDied.hpp>
 #include <IO/EventLogs/UnitAttacked.hpp>
-
+#include "GameManager/Command/CmdDescriptions.hpp"
+#include "GameManager/Command/IUnitCommand.hpp"
+#include "Units/Unit.hpp"
 #include "Units/UnitBuilder.hpp"
 #include "Map/Map.hpp"
 
+#include <memory>
 #include <vector>
+
 
 int main(int argc, char** argv)
 {
 	using namespace sw;
 
-	units::UnitBuilder<units::UnitClass::WAR, units::Unit> warBuilder;
-	warBuilder.add_action_by_priority(0, 
-	[](units::IUnit& uRef, bool f){
-		std::cout << "zero war action" << std::endl;
-		return false;
-	});
-	warBuilder.add_action_by_priority(1, 
-	[](units::IUnit& uRef, bool f){
-		std::cout << "first war action" << std::endl;
-		return false;
-	});
-
-	units::UnitBuilder<units::UnitClass::ARCH, units::Unit> archBuilder;
-	archBuilder.add_action_by_priority(0, 
-	[](units::IUnit& uRef, bool f){
-		std::cout << "zero arch action" << std::endl;
-		return false;
-	});
-	archBuilder.add_action_by_priority(1, 
-	[](units::IUnit& uRef, bool f){
-		std::cout << "first arch action" << std::endl;
-		return false;
-	});
-
-	std::vector<std::unique_ptr<units::IUnit>> unitsOnMap;
-	for(int i = 0; i < 10; ++i)
-	{
-		unitsOnMap.emplace_back(warBuilder.create_unit(i));
-		unitsOnMap.emplace_back(archBuilder.create_unit(i + 10));
-	}
-
-
-    // Создаем объект карты размером 5x5
-    map::Map<units::IUnit> map(5, 5);
-	std::cout << map;
-	
-	map.addUnit(0, 2, unitsOnMap[0]->clone());
-	map.addUnit(4, 2, unitsOnMap[1]->clone());
-	std::cout << map;
-
-
-	// for(auto& unit : unitsOnMap)
-	// 	unit->march_process();
 	
 	// if (argc != 2) {
 	// 	throw std::runtime_error("Error: No file specified in command line argument");
