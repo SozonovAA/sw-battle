@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <iomanip>
 
 #include <cmath>
@@ -45,12 +46,18 @@ public:
     }
 
     // Метод для возвращения всех объектов в радиусе определенного количества клеток вокруг юнита
-    std::vector<std::shared_ptr<EntityT>> getUnitsAround(unsigned x, unsigned y, unsigned radius) const {
+    std::vector<std::shared_ptr<EntityT>> getUnitsAround(const unsigned x, const unsigned y, const unsigned radius) const {
         std::vector<std::shared_ptr<EntityT>> units;
+        unsigned x_min = std::max(0, static_cast<int>(x - radius));
+        unsigned x_max = std::min(rows_ - 1, x + radius);
+        unsigned y_min = std::max(0, static_cast<int>(y - radius));
+        unsigned y_max = std::min(cols_ - 1, y + radius);
 
-        for (unsigned i = std::max(0u, x - radius); i <= std::min(rows_ - 1, x + radius); ++i) {
-            for (unsigned j = std::max(0u, y - radius); j <= std::min(cols_ - 1, y + radius); ++j) {
-                if (grid_[i][j] && ((x - i) + (y - j)) <= radius) {
+        for (int i = x_min; i <= x_max; ++i) {
+            for (int j = y_min; j <= y_max; ++j) {
+                std::cout << "i: " << i << "j: " << j << std::endl;
+                if (!(x == i && y == j) && grid_[i][j]) {
+                    std::cout << "push_back: " << std::endl;
                     units.push_back(grid_[i][j]);
                 }
             }

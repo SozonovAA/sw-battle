@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <gtest/gtest.h>
 #include "../../src/Map/Map.hpp"
 #include "../../src/Units/Unit.hpp"
@@ -50,20 +51,47 @@ TEST(map, testMoveUnitToOccupiedCell){
 // Тест для метода getUnitsAround: получение объектов в радиусе от указанных координат
 TEST(map, testGetUnitsAround){
     Map<units::IUnit> map(5, 5);
-    std::shared_ptr<units::IUnit> unit1 = ub.create_unit(0);
-    std::shared_ptr<units::IUnit> unit2 = ub.create_unit(0);
+    const std::shared_ptr<units::IUnit> unit1 = ub.create_unit(1);
+    std::shared_ptr<units::IUnit> unit2 = ub.create_unit(2);
     map.addUnit(2, 3, unit1);
     map.addUnit(3, 4, unit2);
 
     std::cout << map;
-
-    //todo : fix
-    // Проверяем, что в радиусе 1 от (2,3) находится unit2, а в радиусе 2 - unit1 и unit2
-    EXPECT_EQ(map.getUnitsAround(2, 3, 1).size(), 1);
-    EXPECT_EQ(map.getUnitsAround(2, 3, 1)[0], unit2);
-
-    EXPECT_EQ(map.getUnitsAround(3, 3, 2).size(), 2);
-    EXPECT_EQ(map.getUnitsAround(2, 3, 2)[0], unit1);
-    EXPECT_EQ(map.getUnitsAround(2, 3, 2)[1], unit2);
+    {
+        const auto& res = map.getUnitsAround(3, 3, 1);
+        EXPECT_EQ(res.size(), 2);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
+    }
+    {
+        const auto& res = map.getUnitsAround(3, 3, 2);
+        EXPECT_EQ(res.size(), 2);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
+    }
+    {
+        const auto& res = map.getUnitsAround(4, 4, 1);
+        EXPECT_EQ(res.size(), 1);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) == res.end());
+    }
+    {
+        const auto& res = map.getUnitsAround(4, 4, 5);
+        EXPECT_EQ(res.size(), 2);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
+    }
+    {
+        const auto& res = map.getUnitsAround(4, 4, 0);
+        EXPECT_EQ(res.size(), 0);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) == res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) == res.end());
+    }
+    {
+        const auto& res = map.getUnitsAround(2, 3, 0);
+        EXPECT_EQ(res.size(), 0);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) == res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) == res.end());
+    }
 }
 }

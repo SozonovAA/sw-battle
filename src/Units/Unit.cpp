@@ -25,10 +25,4 @@ std::unique_ptr<IUnit> Unit::clone() const
 {
     return std::make_unique<Unit>(*this);
 }
-
-UnitClass Unit::get_class() const
-{
-    return _type;
-}
-
 }

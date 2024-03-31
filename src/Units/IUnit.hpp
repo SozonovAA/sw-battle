@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #include "UnitTypes.hpp"
+#include "../Map/Coords.hpp"
 namespace sw::units {
 class IUnit
 {
@@ -21,8 +22,16 @@ class IUnit
     virtual bool march_process() = 0;
     virtual void set_march(unsigned x, unsigned y) = 0;
     virtual std::unique_ptr<IUnit> clone() const = 0;
-    virtual UnitClass get_class() const = 0;
+    UnitClass get_class() const
+    {
+        return _type;
+    }
+    unsigned get_id() const
+    {
+        return _id;
+    }
     virtual ~IUnit() = default;
+
 
 
     // Перегрузка оператора вывода для вывода карты в поток
@@ -40,6 +49,12 @@ class IUnit
         }
         return os;
     };
+
+    protected:
+    IUnit(UnitClass type, unsigned id) : _type(type), _id(id) {};
+    const UnitClass _type;
+    const unsigned _id;
+    map::Point coord;
 };
 
 }
