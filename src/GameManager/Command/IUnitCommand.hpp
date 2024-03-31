@@ -5,7 +5,6 @@ namespace sw::mngr::cmd {
 class IUnitCommand
 {
     public:
- 
     virtual CmdDescription execute() const = 0;
     virtual ~IUnitCommand() = default;
     protected:   
@@ -18,7 +17,7 @@ class UnitCommand : public IUnitCommand
 {
 public:
     using description_type = DescrT;
-    UnitCommand(unsigned id, description_type descr) : IUnitCommand(id), descr_{descr} {};
+    UnitCommand(unsigned id, const description_type& descr) : IUnitCommand(id), descr_{descr} {};
 
     virtual CmdDescription execute() const override
     {

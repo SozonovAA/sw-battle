@@ -36,6 +36,7 @@ struct CmdDescription {
 
     const CmdType type_;
     const unsigned id_;
+    //todo: CRTP
     const std::variant<
         MoveDescription, 
         MeleeAttackDescription,

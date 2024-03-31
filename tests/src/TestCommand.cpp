@@ -5,7 +5,7 @@
 
 //todo!!!!
 namespace sw::map::test {
-    using namespace mngr::cmd;
+using namespace mngr::cmd;
 TEST(command, testExecute){
     // auto ret = std::make_shared<UnitCommand<MeleeAttackDescription>>(0, MeleeAttackDescription{1, 12});
     // auto ret1 = std::make_shared<UnitCommand<MoveDescription>>(1, MoveDescription{1, 1});
