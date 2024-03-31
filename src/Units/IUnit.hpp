@@ -7,8 +7,15 @@
 #include <unordered_map>
 
 #include "UnitTypes.hpp"
-#include "../Map/Coords.hpp"
+
 namespace sw::units {
+enum class UnitState
+{
+    UNDEF = 0,
+    ALIVE,
+    DEAD
+};
+
 class IUnit
 {
     public:
@@ -24,6 +31,7 @@ class IUnit
     virtual std::unique_ptr<IUnit> clone() const = 0;
     virtual UnitClass get_class() const = 0;
     virtual unsigned get_id() const = 0;
+    virtual UnitState get_state() const = 0;
     virtual ~IUnit() = default;
 
     // Перегрузка оператора вывода для вывода карты в поток

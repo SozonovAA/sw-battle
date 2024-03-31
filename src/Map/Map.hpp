@@ -55,11 +55,8 @@ public:
 
         for (int i = x_min; i <= x_max; ++i) {
             for (int j = y_min; j <= y_max; ++j) {
-                std::cout << "i: " << i << "j: " << j << std::endl;
-                if (!(x == i && y == j) && grid_[i][j]) {
-                    std::cout << "push_back: " << std::endl;
+                if (!(x == i && y == j) && grid_[i][j]) 
                     units.push_back(grid_[i][j]);
-                }
             }
         }
 
