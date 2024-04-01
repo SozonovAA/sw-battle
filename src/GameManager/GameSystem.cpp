@@ -1,6 +1,5 @@
 #include "GameSystem.hpp"
-#include "GameManager/Command/CmdDescriptions.hpp"
-#include "GameManager/Command/Impls/RangeAttackCommand.hpp"
+#include "Command/CmdDescriptions.hpp"
 
 namespace sw::mngr {
 
@@ -11,20 +10,20 @@ namespace sw::mngr {
         {
         case cmd::CmdType::MOVE:
         {
-            auto mv = commandRes.get_description<cmd::MoveDescription>();
+            const auto& mv = commandRes.get_description<cmd::CmdType::MOVE>();
             //todo:func
             break;
         }
         case cmd::CmdType::M_ATCK:
         {
-            auto mv = commandRes.get_description<cmd::MeleeAttackDescription>();
+            const auto& mv = commandRes.get_description<cmd::CmdType::M_ATCK>();
             //todo:func
             break;
         }
         break;
         case cmd::CmdType::R_ATCK:
         {
-            auto mv = commandRes.get_description<cmd::RangeAttackDescription>();
+            const auto& mv = commandRes.get_description<cmd::CmdType::R_ATCK>();
             //todo:func
             break;
         }

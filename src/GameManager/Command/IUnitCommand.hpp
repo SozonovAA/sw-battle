@@ -18,7 +18,7 @@ class UnitCommand : public IUnitCommand
 public:
     using description_type = DescrT;
     UnitCommand(unsigned id, const description_type& descr) : IUnitCommand(id), descr_{descr} {};
-
+    
     virtual CmdDescription execute() const override
     {
         return CmdDescription(IUnitCommand::id_, descr_);

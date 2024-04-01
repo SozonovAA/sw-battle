@@ -6,50 +6,49 @@
 namespace sw::mngr::cmd {
 enum class CmdType { UNDEF = 0, MOVE, M_ATCK, R_ATCK };
 
-struct MoveDescription {
+template <CmdType Type>
+struct Description;
+
+template <>
+struct Description<CmdType::MOVE> {
   const int delta_x;
   const int delta_y;
-  const CmdType type_ = CmdType::MOVE;
-
-  bool operator==(const MoveDescription& rhs) {
-    return this->delta_x == rhs.delta_x && this->delta_y == rhs.delta_y && this->type_ == rhs.type_;
-}
-
 };
+using MoveDescription = Description<CmdType::MOVE> ;
 
-struct MeleeAttackDescription {
+template <>
+struct Description<CmdType::M_ATCK> {
   const unsigned unit_id;
   const unsigned damage;
-  const CmdType type_ = CmdType::M_ATCK;
 };
+using MeleeAttackDescription = Description<CmdType::M_ATCK> ;
 
-struct RangeAttackDescription {
+template <>
+struct Description<CmdType::R_ATCK> {
   const unsigned unit_id;
   const unsigned range;
   const unsigned damage;
-  const CmdType type_ = CmdType::R_ATCK;
 };
+using RangeAttackDescription = Description<CmdType::R_ATCK> ;
 
 struct CmdDescription {
-    template<class TDescr>
-    CmdDescription(unsigned id, TDescr descr) : type_(descr.type_), id_(id), cmd_params_(descr){} ;
+    template<CmdType T>
+    CmdDescription(unsigned id, Description<T> descr) : type_(T), id_(id), cmd_params_(descr){} ;
 
     const CmdType type_;
     const unsigned id_;
-    //todo: CRTP
     const std::variant<
         MoveDescription, 
         MeleeAttackDescription,
         RangeAttackDescription
     > cmd_params_;
 
-    template<class T>
-    T get_description() const
-    {
-        return std::get<T>(cmd_params_);
+    template <CmdType Type>
+    Description<Type> get_description() const {
+        return std::get<Description<Type>>(cmd_params_);
     }
 
-    bool operator==(const CmdDescription& rhs) {
+    bool operator==(const CmdDescription& rhs) const{
     return this->id_ == rhs.id_ &&
            this->type_ == rhs.type_;
     }
@@ -63,19 +62,19 @@ struct CmdDescription {
             break;
         case CmdType::MOVE: {
             os << "MOVE";
-            const MoveDescription& move_descr = cmd.get_description<MoveDescription>();
+            const MoveDescription& move_descr = cmd.get_description<CmdType::MOVE>();
             os << ", Move: (" << move_descr.delta_x << ", " << move_descr.delta_y << ")";
             break;
         }
         case CmdType::M_ATCK: {
             os << "MELEE ATTACK";
-            const MeleeAttackDescription& m_atck_descr = cmd.get_description<MeleeAttackDescription>();
+            const MeleeAttackDescription& m_atck_descr = cmd.get_description<CmdType::M_ATCK>();
             os << ", Melee Attack: (Unit ID: " << m_atck_descr.unit_id << ", Damage: " << m_atck_descr.damage << ")";
             break;
         }
         case CmdType::R_ATCK: {
             os << "RANGE ATTACK";
-            const RangeAttackDescription& r_atck_descr = cmd.get_description<RangeAttackDescription>();
+            const RangeAttackDescription& r_atck_descr = cmd.get_description<CmdType::R_ATCK>();
             os << ", Range Attack: (Unit ID: " << r_atck_descr.unit_id << ", Range: " << r_atck_descr.range 
                << ", Damage: " << r_atck_descr.damage << ")";
             break;
