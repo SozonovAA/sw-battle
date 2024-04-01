@@ -3,19 +3,33 @@
 #include "../../src/Map/Map.hpp"
 #include "../../src/Units/Unit.hpp"
 
-//todo!!!!
 namespace sw::map::test {
 using namespace mngr::cmd;
 TEST(command, testExecute){
-    // auto ret = std::make_shared<UnitCommand<MeleeAttackDescription>>(0, MeleeAttackDescription{1, 12});
-    // auto ret1 = std::make_shared<UnitCommand<MoveDescription>>(1, MoveDescription{1, 1});
-    // auto ret2 = std::make_shared<UnitCommand<RangeAttackDescription>>(1, RangeAttackDescription{1, 1, 123});
-
-    // auto res = ret->execute();
-    // auto descr = MeleeAttackDescription{1, 12};
-    // EXPECT_EQ(res.id_, 0);
-    // EXPECT_TRUE(res.type_ == CmdType::M_ATCK);
-    // EXPECT_EQ(res.get_description<MeleeAttackDescription>(), descr);
+	{
+		auto descr = MeleeAttackDescription{1, 12};
+		auto ret = std::make_shared<UnitCommand<MeleeAttackDescription>>(0, descr);
+		auto res = ret->execute();
+		EXPECT_EQ(res.id_, 0);
+		EXPECT_TRUE(res.type_ == CmdType::M_ATCK);
+		EXPECT_EQ(res.get_description<CmdType::M_ATCK>(), descr);
+	}
+	{
+		auto descr = MoveDescription{1, 12};
+		auto ret = std::make_shared<UnitCommand<MoveDescription>>(1, descr);
+		auto res = ret->execute();
+		EXPECT_EQ(res.id_, 1);
+		EXPECT_TRUE(res.type_ == CmdType::MOVE);
+		EXPECT_EQ(res.get_description<CmdType::MOVE>(), descr);
+	}
+	{
+		auto descr = RangeAttackDescription{1, 1, 123};
+		auto ret = std::make_shared<UnitCommand<RangeAttackDescription>>(2, descr);
+		auto res = ret->execute();
+		EXPECT_EQ(res.id_, 2);
+		EXPECT_TRUE(res.type_ == CmdType::R_ATCK);
+		EXPECT_EQ(res.get_description<CmdType::R_ATCK>(), descr);
+	}
 }
 
 TEST(command, exectest){
