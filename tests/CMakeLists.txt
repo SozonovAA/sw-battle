@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 file(GLOB_RECURSE SOURCES src/*.cpp src/*.hpp)
 file(GLOB_RECURSE MAP_SOURCES ../src/Map/*.cpp)
 file(GLOB_RECURSE UNITS_SOURCES ../src/Units/*.cpp)
+file(GLOB_RECURSE GMNGR_SOURCES ../src/GameManager/*.cpp)
 
 #----------------------------------------------------------------------------------------------------------------------
 # testing framework
@@ -20,7 +21,7 @@ set(INSTALL_GTEST OFF)
 FetchContent_MakeAvailable(googletest)
 #----------------------------------------------------------------------------------------------------------------------
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${MAP_SOURCES} ${UNITS_SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES} ${MAP_SOURCES} ${UNITS_SOURCES} ${GMNGR_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC src/)
 

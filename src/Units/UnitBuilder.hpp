@@ -32,7 +32,6 @@ class UnitBuilder
 
     bool add_action_by_priority(actions_storage_type::size_type prior, action_type act)
     {
-        
         return _actions.try_emplace(prior, act).second;
     };
 

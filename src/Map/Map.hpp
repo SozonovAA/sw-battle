@@ -1,19 +1,18 @@
 #pragma once
-
-#include <iostream>
 #include <iomanip>
-
 #include <cmath>
+#include "IMap.hpp"
+
 namespace sw::map {
 // Класс для хранения карты
 template<class EntityT>
-class Map {
+class Map : public IMap<EntityT>{
 public:
     Map(unsigned rows, unsigned cols) : rows_(rows), cols_(cols) {
         grid_ = std::vector<std::vector<std::shared_ptr<EntityT>>>(rows, std::vector<std::shared_ptr<EntityT>>(cols, nullptr));
     }
     
-    int addUnit(unsigned x, unsigned y, std::shared_ptr<EntityT> unit) {
+    int addUnit(unsigned x, unsigned y, std::shared_ptr<EntityT> unit) override{
         if (x >= rows_ || y >= cols_)
             return -1;
 
@@ -24,14 +23,14 @@ public:
         return 0;
     }
 
-    std::shared_ptr<EntityT> getUnit(unsigned x, unsigned y) const {
+    std::shared_ptr<EntityT> getUnit(unsigned x, unsigned y) const override{
         if (x >= rows_ || y >= cols_) 
             return nullptr;
         
         return grid_[x][y];
     }
 
-    int moveUnit(unsigned fromX, unsigned fromY, unsigned toX, unsigned toY) {
+    int moveUnit(unsigned fromX, unsigned fromY, unsigned toX, unsigned toY) override{
         if (fromX >= rows_ || fromY >= cols_ || toX >= rows_ || toY >= cols_)
             return -1;
 
@@ -46,7 +45,7 @@ public:
     }
 
     // Метод для возвращения всех объектов в радиусе определенного количества клеток вокруг юнита
-    std::vector<std::shared_ptr<EntityT>> getUnitsAround(const unsigned x, const unsigned y, const unsigned radius) const {
+    std::vector<std::shared_ptr<EntityT>> getUnitsAround(const unsigned x, const unsigned y, const unsigned radius) const override{
         std::vector<std::shared_ptr<EntityT>> units;
         unsigned x_min = std::max(0, static_cast<int>(x - radius));
         unsigned x_max = std::min(rows_ - 1, x + radius);
@@ -55,11 +54,8 @@ public:
 
         for (int i = x_min; i <= x_max; ++i) {
             for (int j = y_min; j <= y_max; ++j) {
-                std::cout << "i: " << i << "j: " << j << std::endl;
-                if (!(x == i && y == j) && grid_[i][j]) {
-                    std::cout << "push_back: " << std::endl;
+                if (!(x == i && y == j) && grid_[i][j]) 
                     units.push_back(grid_[i][j]);
-                }
             }
         }
 
