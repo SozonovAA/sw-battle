@@ -25,8 +25,8 @@ public:
     void SpawnUnit(const units::WarriorDescription& descr, const map::Point& coord);
     void SpawnUnit(const units::ArcherDescription& descr, const map::Point& coord);
     
-    static unit_type GetMeleeAtckTarget(const std::vector<unit_type>& enemies);
-    static unit_type GetRangeAtckTarget(const std::vector<unit_type>& enemies);
+    static unit_type GetAtckTarget(const std::vector<unit_type>& enemies);
+    
 
 private:
     units_storage_type _unitsStorage;

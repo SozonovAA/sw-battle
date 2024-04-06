@@ -50,7 +50,7 @@ TEST(command, defaultMarchTest)
         const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
         EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
         EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
-    }    
+    }
     {
         unit->set_march_position({4, 4});
         const Point expectPoint (-1, -1);
