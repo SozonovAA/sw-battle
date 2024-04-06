@@ -137,7 +137,7 @@ TEST(command, cmdPriorityTest)
         EXPECT_EQ(cmd._type, mngr::cmd::CmdType::M_ATCK);
         EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::M_ATCK>());
         EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>(), std::bad_any_cast);
-        EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::R_ATCK>(), maDescr);
+        EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::M_ATCK>(), maDescr);
     }
 }
 }
