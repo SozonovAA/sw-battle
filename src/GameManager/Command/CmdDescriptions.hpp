@@ -12,7 +12,6 @@ template <>
 struct Description<CmdType::MOVE> {
   const int delta_x;
   const int delta_y;
-
   bool operator==(const Description<CmdType::MOVE>& rhs) const {
     return delta_x == rhs.delta_x && delta_y == rhs.delta_y;
   }
@@ -23,7 +22,6 @@ template <>
 struct Description<CmdType::M_ATCK> {
   const unsigned unit_id;
   const unsigned damage;
-
   bool operator==(const Description<CmdType::M_ATCK>& rhs) const {
       return unit_id == rhs.unit_id && damage == rhs.damage;
   }
@@ -52,9 +50,9 @@ struct CmdDescription {
 
     template <CmdType Type>
     Description<Type> get_description() const {
-        return std::any_cast<Description<Type>>(cmd_params_);
+      return std::any_cast<Description<Type>>(cmd_params_);
     }
-
+    
     bool operator==(const CmdDescription& rhs) const{
     return this->id_ == rhs.id_ &&
            this->type_ == rhs.type_;
