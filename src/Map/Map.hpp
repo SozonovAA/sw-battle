@@ -74,7 +74,6 @@ public:
         return units;
     }
     
-    //todo:implementation and tests
     std::vector<std::shared_ptr<EntityT>>
     getUnitsAround(unsigned x, unsigned y, unsigned fromRadius, unsigned toRadius) const override
     {

@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <gtest/gtest.h>
+#include <stdexcept>
 #include "../../src/Map/Map.hpp"
 #include "../../src/Units/Unit.hpp"
 
@@ -33,76 +34,110 @@ TEST(command, testExecute)
     }
 }
 
-TEST(command, exectest)
+TEST(command, cmdPriorityTest)
 {
     units::UnitBuilder<units::UnitClass::WAR, units::Unit> warBuilder;
+    const auto maDescr = mngr::cmd::MeleeAttackDescription{1, 12};
+    const auto mvDescr = mngr::cmd::MoveDescription{1, 12};
+    const auto raDescr = mngr::cmd::RangeAttackDescription{1, 12, 123};
     warBuilder.add_action_by_priority(
             0,
-            [](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            [maDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
-                std::cout << "zero war action" << std::endl;
                 std::shared_ptr<mngr::cmd::IUnitCommand> ret;
                 
-                if (auto id = uRef.get_id(); id % 2)
+                if (auto id = uRef.get_id(); id == 0)
                     ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::MeleeAttackDescription>>(
-                            uRef.get_id(), mngr::cmd::MeleeAttackDescription{1, 12});
+                            uRef.get_id(), maDescr);
                 
                 return ret;
             });
     warBuilder.add_action_by_priority(
             1,
-            [](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            [mvDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
-                std::cout << "move war action" << std::endl;
                 std::shared_ptr<mngr::cmd::IUnitCommand> ret;
                 
                 ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::MoveDescription>>(
-                        uRef.get_id(), mngr::cmd::MoveDescription{1, 1});
+                        uRef.get_id(), mvDescr);
                 
                 return ret;
             });
-    
+    {
+        const auto cmd = warBuilder.create_unit(0, 0)->process()->execute();
+        EXPECT_EQ(cmd._type, mngr::cmd::CmdType::M_ATCK);
+        EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::M_ATCK>());
+        EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>(), std::bad_any_cast);
+        EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::M_ATCK>(), maDescr);
+    }
+    {
+        const auto cmd = warBuilder.create_unit(1, 0)->process()->execute();
+        EXPECT_EQ(cmd._type, mngr::cmd::CmdType::MOVE);
+        EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>());
+        EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::R_ATCK>(), std::bad_any_cast);
+        EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::MOVE>(), mvDescr);
+    }
+
+
     units::UnitBuilder<units::UnitClass::ARCH, units::Unit> archBuilder;
     archBuilder.add_action_by_priority(
-            0,
-            [](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            10,
+            [raDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
-                std::cout << "zero arch action" << std::endl;
                 std::shared_ptr<mngr::cmd::IUnitCommand> ret;
                 
                 if (auto id = uRef.get_id(); id % 2)
                     ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::RangeAttackDescription>>(
                             uRef.get_id(),
-                            mngr::cmd::RangeAttackDescription{1, 12, 123});
+                            raDescr);
                 
                 return ret;
             });
     archBuilder.add_action_by_priority(
             1,
-            [](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            [mvDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
-                std::cout << "move arch action" << std::endl;
                 std::shared_ptr<mngr::cmd::IUnitCommand> ret;
-                ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::MoveDescription>>(
-                        uRef.get_id(), mngr::cmd::MoveDescription{1, 1});
+
+                if (auto id = uRef.get_id(); id % 2 && id < 10)
+                    ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::MoveDescription>>(
+                            uRef.get_id(),
+                            mvDescr);
+                            
                 
                 return ret;
             });
-    
-    std::vector<std::unique_ptr<units::IUnit>> unitsOnMap;
-    for (int i = 0; i < 10; ++i)
+    archBuilder.add_action_by_priority(
+            1000,
+            [maDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            {
+                std::shared_ptr<mngr::cmd::IUnitCommand> ret;
+                ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::MeleeAttackDescription>>(
+                        uRef.get_id(), maDescr);
+                
+                return ret;
+            });
+
     {
-        unitsOnMap.emplace_back(warBuilder.create_unit(i, 0));
-        unitsOnMap.emplace_back(archBuilder.create_unit(i + 10, 0));
+        const auto cmd = archBuilder.create_unit(1, 0)->process()->execute();
+        EXPECT_EQ(cmd._type, mngr::cmd::CmdType::MOVE);
+        EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>());
+        EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::R_ATCK>(), std::bad_any_cast);
+        EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::MOVE>(), mvDescr);
     }
-    
-    for (auto &unit: unitsOnMap)
     {
-        if (auto cmd = unit->process())
-        {
-            auto res = cmd->execute();
-            std::cout << res << std::endl;
-        }
+        const auto cmd = archBuilder.create_unit(11, 0)->process()->execute();
+        EXPECT_EQ(cmd._type, mngr::cmd::CmdType::R_ATCK);
+        EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::R_ATCK>());
+        EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>(), std::bad_any_cast);
+        EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::R_ATCK>(), raDescr);
+    }
+    {
+        const auto cmd = archBuilder.create_unit(6, 0)->process()->execute();
+        EXPECT_EQ(cmd._type, mngr::cmd::CmdType::M_ATCK);
+        EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::M_ATCK>());
+        EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>(), std::bad_any_cast);
+        EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::R_ATCK>(), maDescr);
     }
 }
 }

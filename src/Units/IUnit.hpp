@@ -25,7 +25,7 @@ public:
     using param_pair_type = std::pair<std::string, sw::mngr::cmd::param_type>;
     using action_type = std::function<std::shared_ptr<sw::mngr::cmd::IUnitCommand>(IUnit &, bool)>;
     using params_storage_type = std::unordered_map<std::string, sw::mngr::cmd::param_type>;
-    using actions_storage_type = std::map<unsigned, action_type>;
+    using actions_storage_type = std::map<unsigned, action_type, std::less<unsigned>>;
     using id_type = sw::mngr::cmd::id_type;
     using hp_type = hp_type;
     
