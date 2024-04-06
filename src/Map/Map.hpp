@@ -12,43 +12,43 @@ namespace sw::map {
     {
     public:
         using grid_type = std::vector<std::vector<std::shared_ptr<EntityT>>>;
-        Map(unsigned rows, unsigned cols) : rows_(rows), cols_(cols)
+        Map(unsigned rows, unsigned cols) : _rows(rows), _cols(cols)
         {
-            grid_ = grid_type(rows, std::vector<std::shared_ptr<EntityT>>(cols, nullptr));
+            _grid = grid_type(rows, std::vector<std::shared_ptr<EntityT>>(cols, nullptr));
         }
         
         int addUnit(unsigned x, unsigned y, std::shared_ptr<EntityT> unit) override
         {
-            if (x >= rows_ || y >= cols_)
+            if (x >= _rows || y >= _cols)
                 return -1;
             
-            if (grid_[x][y])
+            if (_grid[x][y])
                 return -2;
             
-            grid_[x][y] = unit;
+            _grid[x][y] = unit;
             return 0;
         }
         
         std::shared_ptr<EntityT> getUnit(unsigned x, unsigned y) const override
         {
-            if (x >= rows_ || y >= cols_)
+            if (x >= _rows || y >= _cols)
                 return nullptr;
             
-            return grid_[x][y];
+            return _grid[x][y];
         }
         
         int moveUnit(unsigned fromX, unsigned fromY, unsigned toX, unsigned toY) override
         {
-            if (fromX >= rows_ || fromY >= cols_ || toX >= rows_ || toY >= cols_)
+            if (fromX >= _rows || fromY >= _cols || toX >= _rows || toY >= _cols)
                 return -1;
             
-            if (!grid_[fromX][fromY])
+            if (!_grid[fromX][fromY])
                 return -2;
             
-            if (grid_[toX][toY])
+            if (_grid[toX][toY])
                 return -3;
             
-            grid_[toX][toY] = std::move(grid_[fromX][fromY]);
+            _grid[toX][toY] = std::move(_grid[fromX][fromY]);
             return 0;
         }
         
@@ -58,16 +58,16 @@ namespace sw::map {
         {
             std::vector<std::shared_ptr<EntityT>> units;
             unsigned x_min = std::max(0, static_cast<int>(x - radius));
-            unsigned x_max = std::min(rows_ - 1, x + radius);
+            unsigned x_max = std::min(_rows - 1, x + radius);
             unsigned y_min = std::max(0, static_cast<int>(y - radius));
-            unsigned y_max = std::min(cols_ - 1, y + radius);
+            unsigned y_max = std::min(_cols - 1, y + radius);
             
             for (unsigned i = x_min; i <= x_max; ++i)
             {
                 for (unsigned j = y_min; j <= y_max; ++j)
                 {
-                    if (!(x == i && y == j) && grid_[i][j])
-                        units.push_back(grid_[i][j]);
+                    if (!(x == i && y == j) && _grid[i][j])
+                        units.push_back(_grid[i][j]);
                 }
             }
             
@@ -77,11 +77,11 @@ namespace sw::map {
         friend std::ostream &operator<<(std::ostream &os, const Map &map)
         {
             os << "---------------" << std::endl;
-            for (int i = 0; i < map.rows_; ++i)
+            for (int i = 0; i < map._rows; ++i)
             {
-                for (int j = 0; j < map.cols_; ++j)
+                for (int j = 0; j < map._cols; ++j)
                 {
-                    if (const auto entity = map.grid_[j][i])
+                    if (const auto entity = map._grid[j][i])
                     {
                         os << std::setw(2) << *entity;
                     } else
@@ -95,10 +95,10 @@ namespace sw::map {
             return os;
         }
     private:
-        const unsigned rows_;
-        const unsigned cols_;
+        const unsigned _rows;
+        const unsigned _cols;
         
-        grid_type grid_;
+        grid_type _grid;
     };
     
     

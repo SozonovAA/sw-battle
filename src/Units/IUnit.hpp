@@ -30,11 +30,13 @@ namespace sw::units {
         //todo: get param value method
         
         virtual std::shared_ptr<mngr::cmd::IUnitCommand> process() = 0;
-        virtual void set_march(map::Point aim) = 0;
+        virtual void set_unit_position(const map::Point& aim) = 0;
+        virtual map::Point get_unit_position() = 0;
         [[nodiscard]] virtual std::unique_ptr<IUnit> clone() const = 0;
         [[nodiscard]] virtual UnitClass get_class() const = 0;
         [[nodiscard]] virtual unsigned get_id() const = 0;
         [[nodiscard]] virtual UnitState get_state() const = 0;
+        virtual void set_main_params(action_type march_action, params_storage_type params, actions_storage_type actions) = 0;
         
         virtual ~IUnit() = default;
         

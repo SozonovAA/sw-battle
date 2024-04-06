@@ -38,30 +38,30 @@ struct Description<CmdType::R_ATCK> {
       return unit_id == rhs.unit_id && range == rhs.range && damage == rhs.damage;
   }
 };
-using RangeAttackDescription = Description<CmdType::R_ATCK> ;
+using RangeAttackDescription = Description<CmdType::R_ATCK>;
 
 struct CmdDescription {
     template<CmdType T>
-    CmdDescription(unsigned id, Description<T> descr) : type_(T), id_(id), cmd_params_(descr){} ;
+    CmdDescription(unsigned id, Description<T> descr) : _type(T), _id(id), _cmd_params(descr){} ;
 
-    const CmdType type_;
-    const unsigned id_;
-    const std::any cmd_params_;
+    const CmdType _type;
+    const unsigned _id;
+    const std::any _cmd_params;
 
     template <CmdType Type>
-    Description<Type> get_description() const {
-      return std::any_cast<Description<Type>>(cmd_params_);
+    [[nodiscard]] Description<Type> get_description() const {
+      return std::any_cast<Description<Type>>(_cmd_params);
     }
     
     bool operator==(const CmdDescription& rhs) const{
-    return this->id_ == rhs.id_ &&
-           this->type_ == rhs.type_;
+    return this->_id == rhs._id &&
+           this->_type == rhs._type;
     }
 
     friend std::ostream &operator<<(std::ostream &os, const CmdDescription &cmd)
     {
-      os << "ID: " << cmd.id_ << ", CmdType: ";
-      switch (cmd.type_) {
+      os << "ID: " << cmd._id << ", CmdType: ";
+      switch (cmd._type) {
           case CmdType::UNDEF:
               os << "UNDEFINED";
               break;

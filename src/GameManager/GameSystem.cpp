@@ -6,12 +6,13 @@ namespace sw::mngr {
     void GameSystem::execute(const cmd::IUnitCommand &cmd)
     {
         const auto &commandRes = cmd.execute();
-        switch (commandRes.type_)
+        switch (commandRes._type)
         {
             case cmd::CmdType::MOVE:
             {
                 const auto &mv = commandRes.get_description<cmd::CmdType::MOVE>();
                 //todo:func
+                
                 break;
             }
             case cmd::CmdType::M_ATCK:
@@ -20,7 +21,6 @@ namespace sw::mngr {
                 //todo:func
                 break;
             }
-                break;
             case cmd::CmdType::R_ATCK:
             {
                 const auto &mv = commandRes.get_description<cmd::CmdType::R_ATCK>();
@@ -28,7 +28,7 @@ namespace sw::mngr {
                 break;
             }
             case cmd::CmdType::UNDEF:
-                break;
+                throw std::runtime_error("Undefined command type!");
         }
     }
     

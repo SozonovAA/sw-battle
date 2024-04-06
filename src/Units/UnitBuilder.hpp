@@ -1,18 +1,20 @@
 #pragma once
 
 #include <memory>
+#include <utility>
 
 #include "IUnit.hpp"
 
 namespace sw::units {
-
-//todo: concept
+    
+    //todo: concept
     template<UnitClass Type, class UnitT>
     class UnitBuilder
     {
     public:
-        using unit_type = UnitT;
+        static_assert(std::is_base_of<IUnit, UnitT>::value, "UnitT must be derived from IUnit!");
         
+        using unit_type = UnitT;
         using param_type = IUnit::param_type;
         using action_type = IUnit::action_type;
         using params_storage_type = IUnit::params_storage_type;
@@ -21,14 +23,18 @@ namespace sw::units {
         std::unique_ptr<IUnit> create_unit(unsigned id)
         {
             auto ret = std::make_unique<unit_type>(unit_type(Type, id));
-            ret->_priority_actions_storage = _actions;
-            ret->_params = _params;
+            ret->set_main_params(_march_method, _params, _actions);
             return ret;
         };
         
         bool add_param_with_default_value(const param_type &par)
         {
             return _params.try_emplace(par).second;
+        };
+        
+        void set_march_method(action_type act)
+        {
+            _march_method = std::move(act);
         };
         
         bool add_action_by_priority(actions_storage_type::size_type prior, action_type act)
@@ -39,6 +45,7 @@ namespace sw::units {
     private:
         params_storage_type _params;
         actions_storage_type _actions;
+        action_type _march_method;
     };
     
     
