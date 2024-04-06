@@ -3,7 +3,10 @@
 //
 
 #include "GameManager.hpp"
-
+#include "../Map/Coords.hpp"
+#include "Command/CmdDescriptions.hpp"
+#include <cmath>
+#include <cstdlib>
 namespace sw::mngr {
 using SpawnCommand =
         mngr::cmd::UnitCommand<mngr::cmd::SpawnDescription>;
@@ -22,7 +25,14 @@ void GameManager::SpawnUnit(const units::WarriorDescription& descr, const map::P
     units::UnitBuilder<units::UnitClass::WAR, units::Unit> builder;
     builder.add_param("strength", descr.strength);
     builder.add_param("mRange", descr.mRange);
-    //todo: march method
+
+    builder.set_march_method(
+        [](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+        {
+            return units::DefaultMarchMethod(uRef);
+        }
+    );
+
     builder.add_action_by_priority(
             0,
             [map = _map](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
@@ -51,7 +61,12 @@ void GameManager::SpawnUnit(const units::ArcherDescription& descr, const map::Po
     builder.add_param("agility", descr.agility);
     builder.add_param("mRange", descr.mRange);
     builder.add_param("rRange", descr.rRange);
-    //todo: march method
+    builder.set_march_method(
+        [](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+        {
+            return units::DefaultMarchMethod(uRef);
+        }
+    );
     builder.add_action_by_priority(
             0,
             [map = _map](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>

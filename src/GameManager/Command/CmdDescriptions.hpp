@@ -6,7 +6,7 @@
 
 namespace sw::mngr::cmd {
 enum class CmdType { UNDEF = 0, SPAWN, MOVE, M_ATCK, R_ATCK };
-using delta_type = int;
+using delta_type = map::Point::coord_type;
 using param_type = units::param_type;
 using id_type = units::id_type;
 

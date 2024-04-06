@@ -34,6 +34,83 @@ TEST(command, testExecute)
     }
 }
 
+TEST(command, defaultMarchTest)
+{
+    units::UnitBuilder<units::UnitClass::WAR, units::Unit> warBuilder;
+    const auto maDescr = mngr::cmd::MeleeAttackDescription{1, 12};
+    const auto mvDescr = mngr::cmd::MoveDescription{1, 12};
+    const auto raDescr = mngr::cmd::RangeAttackDescription{1, 12, 123};
+
+    auto unit = warBuilder.create_unit(0, 0);
+    unit->set_unit_position({5, 5});
+    {
+        unit->set_march_position({7, 7});
+        const Point expectPoint (1, 1);
+        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
+        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
+        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+    }    
+    {
+        unit->set_march_position({4, 4});
+        const Point expectPoint (-1, -1);
+        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
+        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
+        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+    }   
+    {
+        unit->set_march_position({5, 5});
+        const Point expectPoint (0, 0);
+        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
+        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
+        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+    }
+    {
+        unit->set_march_position({4, 5});
+        const Point expectPoint (-1, 0);
+        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
+        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
+        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+    }
+    {
+        unit->set_march_position({5, 4});
+        const Point expectPoint (0, -1);
+        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
+        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
+        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+    }
+
+    unit->set_unit_position({-5, -5});
+    {
+        unit->set_march_position({5, 4});
+        const Point expectPoint (1, 1);
+        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
+        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
+        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+    }
+    {
+        unit->set_march_position({-6, -6});
+        const Point expectPoint (-1, -1);
+        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
+        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
+        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+    }
+    {
+        unit->set_march_position({1000, -6});
+        const Point expectPoint (1, -1);
+        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
+        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
+        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+    }
+}
+
 TEST(command, cmdPriorityTest)
 {
     units::UnitBuilder<units::UnitClass::WAR, units::Unit> warBuilder;
@@ -53,16 +130,24 @@ TEST(command, cmdPriorityTest)
                 return ret;
             });
     warBuilder.add_action_by_priority(
-            1,
-            [mvDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
-            {
-                std::shared_ptr<mngr::cmd::IUnitCommand> ret;
-                
-                ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::MoveDescription>>(
-                        uRef.get_id(), mvDescr);
-                
-                return ret;
-            });
+        1,
+        [raDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+        {
+            std::shared_ptr<mngr::cmd::IUnitCommand> ret;
+            
+            if (auto id = uRef.get_id(); id == 1)
+                ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::RangeAttackDescription>>(
+                        uRef.get_id(), raDescr);
+            
+            return ret;
+        }
+    );
+    warBuilder.set_march_method(
+        [](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+        {
+            return units::DefaultMarchMethod(uRef);
+        }
+    );
     {
         const auto cmd = warBuilder.create_unit(0, 0)->process()->execute();
         EXPECT_EQ(cmd._type, mngr::cmd::CmdType::M_ATCK);
@@ -72,9 +157,20 @@ TEST(command, cmdPriorityTest)
     }
     {
         const auto cmd = warBuilder.create_unit(1, 0)->process()->execute();
+        EXPECT_EQ(cmd._type, mngr::cmd::CmdType::R_ATCK);
+        EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::R_ATCK>());
+        EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>(), std::bad_any_cast);
+        EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::R_ATCK>(), raDescr);
+    }
+    {
+        auto unit = warBuilder.create_unit(2, 0);
+        unit->set_unit_position({5, 5});
+        unit->set_march_position({7, 7});
+        const auto cmd = unit->process()->execute();
         EXPECT_EQ(cmd._type, mngr::cmd::CmdType::MOVE);
         EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>());
         EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::R_ATCK>(), std::bad_any_cast);
+        const auto mvDescr =  MoveDescription{1, 1}; 
         EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::MOVE>(), mvDescr);
     }
 

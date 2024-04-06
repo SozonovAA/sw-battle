@@ -12,6 +12,9 @@ std::shared_ptr<mngr::cmd::IUnitCommand> Unit::process()
         if (auto ptr = it.second(*this, false))
             return ptr;
     }
+    if (_march_method) {
+        return _march_method(*this, false);
+    }
     return {};
 }
 
@@ -19,9 +22,18 @@ void Unit::set_unit_position(const map::Point &aim)
 {
     _coord = aim;
 }
-map::Point Unit::get_unit_position()
+map::Point Unit::get_unit_position() const
 {
     return _coord;
+}
+
+void Unit::set_march_position(const map::Point &aim)
+{
+    _march_coord = aim;
+}
+map::Point Unit::get_march_position() const
+{
+    return _march_coord;
 }
 
 std::unique_ptr<IUnit> Unit::clone() const
