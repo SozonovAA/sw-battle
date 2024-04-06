@@ -99,4 +99,63 @@ TEST(map, testGetUnitsAround)
         EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) == res.end());
     }
 }
+
+TEST(map, testGetUnitsAroundFromTo)
+{
+    // Создание карты размером 5x5
+    Map<units::IUnit> map(5, 5);
+
+    // Создание и добавление юнитов на карту
+    const std::shared_ptr<units::IUnit> unit1 = ub.create_unit(1, 0);
+    const std::shared_ptr<units::IUnit> unit2 = ub.create_unit(2, 0);
+    const std::shared_ptr<units::IUnit> unit3 = ub.create_unit(3, 0);
+
+    map.addUnit(2, 3, unit1);
+    map.addUnit(3, 4, unit2);
+    map.addUnit(0, 0, unit3);
+
+    // Тесты для разных радиусов вокруг точек
+    {
+        const auto &res = map.getUnitsAround(3, 3, 0, 1);
+        EXPECT_EQ(res.size(), 2);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
+    }
+    {
+        const auto &res = map.getUnitsAround(3, 3, 1, 2);
+        EXPECT_EQ(res.size(), 2);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
+    }
+    {
+        const auto &res = map.getUnitsAround(3, 3, 1, 1);
+        EXPECT_EQ(res.size(), 0);
+    }
+    {
+        const auto &res = map.getUnitsAround(3, 3, 1, 1000);
+        EXPECT_EQ(res.size(), 3);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit3) != res.end());
+    }
+    {
+        const auto &res = map.getUnitsAround(3, 3, 2, 1000);
+        EXPECT_EQ(res.size(), 1);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit3) != res.end());
+    }
+    // Тесты для разных радиусов вокруг точек
+    {
+        const auto &res = map.getUnitsAround(2, 1, 1, 2);
+        EXPECT_EQ(res.size(), 2);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit3) != res.end());
+    }
+    // Тесты для разных радиусов вокруг точек
+    {
+        const auto &res = map.getUnitsAround(2, 1, 3, 1000);
+        EXPECT_EQ(res.size(), 1);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
+    }
+}
+
 }

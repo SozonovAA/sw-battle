@@ -25,11 +25,11 @@ void GameManager::SpawnUnit(const units::WarriorDescription& descr, const map::P
     //todo: march method
     builder.add_action_by_priority(
             0,
-            [this](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            [map = _map](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
                 using namespace mngr::cmd;
                 const auto unitPosition = uRef.get_unit_position();
-                const auto &unitsAround = _map->getUnitsAround(
+                const auto &unitsAround = map->getUnitsAround(
                         unitPosition._x,
                         unitPosition._y,
                         uRef.get_param_value("mRange"));
@@ -54,11 +54,11 @@ void GameManager::SpawnUnit(const units::ArcherDescription& descr, const map::Po
     //todo: march method
     builder.add_action_by_priority(
             0,
-            [this](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            [map = _map](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
                 using namespace mngr::cmd;
                 const auto unitPosition = uRef.get_unit_position();
-                const auto &unitsAround = _map->getUnitsAround(
+                const auto &unitsAround = map->getUnitsAround(
                     unitPosition._x,
                     unitPosition._y,
                     2,
@@ -74,11 +74,11 @@ void GameManager::SpawnUnit(const units::ArcherDescription& descr, const map::Po
     );
     builder.add_action_by_priority(
             1,
-            [this](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            [map = _map](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
                 using namespace mngr::cmd;
                 const auto unitPosition = uRef.get_unit_position();
-                const auto &unitsAround = _map->getUnitsAround(
+                const auto &unitsAround = map->getUnitsAround(
                         unitPosition._x,
                         unitPosition._y,
                         uRef.get_param_value("mRange"));
@@ -94,6 +94,7 @@ void GameManager::SpawnUnit(const units::ArcherDescription& descr, const map::Po
     _gameSystem->execute(GenerateSpawnCommand(builder.create_unit(descr.id, descr.hp), coord));
 }
 
+//todo: implement and tests
 GameManager::unit_type GameManager::GetMeleeAtckTarget(const std::vector<GameManager::unit_type>& enemies)
 {
 

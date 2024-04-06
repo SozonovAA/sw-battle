@@ -74,28 +74,33 @@ public:
         return units;
     }
     
-    
-    //todo:implementation
+    //todo:implementation and tests
     std::vector<std::shared_ptr<EntityT>>
     getUnitsAround(unsigned x, unsigned y, unsigned fromRadius, unsigned toRadius) const override
     {
         std::vector<std::shared_ptr<EntityT>> units;
-//        unsigned x_min = std::max(0, static_cast<int>(x - radius));
-//        unsigned x_max = std::min(_rows - 1, x + radius);
-//        unsigned y_min = std::max(0, static_cast<int>(y - radius));
-//        unsigned y_max = std::min(_cols - 1, y + radius);
-//
-//        for (unsigned i = x_min; i <= x_max; ++i)
-//        {
-//            for (unsigned j = y_min; j <= y_max; ++j)
-//            {
-//                if (!(x == i && y == j) && _grid[i][j])
-//                    units.push_back(_grid[i][j]);
-//            }
-//        }
-        
+        if (fromRadius >= toRadius || toRadius <= 0)
+            return units;
+
+        unsigned x_min = std::max(0, static_cast<int>(x - toRadius));
+        unsigned x_max = std::min(_rows - 1, x + toRadius);
+        unsigned y_min = std::max(0, static_cast<int>(y - toRadius));
+        unsigned y_max = std::min(_cols - 1, y + toRadius);
+
+        for (unsigned i = x_min; i <= x_max; ++i)
+        {
+            for (unsigned j = y_min; j <= y_max; ++j)
+            {
+                // Проверка, что расстояние до текущей клетки не меньше fromRadius
+                int distance_x = abs(static_cast<int>(i) - static_cast<int>(x)); 
+                int distance_y = abs(static_cast<int>(j) - static_cast<int>(y));
+                if (_grid[i][j] && !(x == i && y == j) && (distance_x >= fromRadius || distance_y >= fromRadius))
+                {
+                    units.push_back(_grid[i][j]);
+                }
+            }
+        }
         return units;
-        
     }
     
     
