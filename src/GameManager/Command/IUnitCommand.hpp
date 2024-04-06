@@ -19,7 +19,7 @@ public:
     using description_type = DescrT;
     UnitCommand(unsigned id, const description_type& descr) : IUnitCommand(id), _descr{descr} {};
     
-    CmdDescription execute() const override
+    [[nodiscard]] CmdDescription execute() const override
     {
         return CmdDescription(IUnitCommand::id_, _descr);
     }

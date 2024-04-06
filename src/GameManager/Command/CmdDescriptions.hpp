@@ -1,17 +1,30 @@
 #pragma once
 #include <any>
 #include <ostream>
+#include "../../Units/UnitTypes.hpp"
+#include "../../Map/Coords.hpp"
 
 namespace sw::mngr::cmd {
-enum class CmdType { UNDEF = 0, MOVE, M_ATCK, R_ATCK };
+enum class CmdType { UNDEF = 0, SPAWN, MOVE, M_ATCK, R_ATCK };
+using delta_type = int;
+using param_type = units::param_type;
+using id_type = units::id_type;
 
 template <CmdType Type>
 struct Description;
 
 template <>
+struct Description<CmdType::SPAWN> {
+    const std::any unit;
+    const map::Point coord;
+
+};
+using SpawnDescription = Description<CmdType::SPAWN> ;
+
+template <>
 struct Description<CmdType::MOVE> {
-  const int delta_x;
-  const int delta_y;
+  const delta_type delta_x;
+  const delta_type delta_y;
   bool operator==(const Description<CmdType::MOVE>& rhs) const {
     return delta_x == rhs.delta_x && delta_y == rhs.delta_y;
   }
@@ -20,8 +33,8 @@ using MoveDescription = Description<CmdType::MOVE> ;
 
 template <>
 struct Description<CmdType::M_ATCK> {
-  const unsigned unit_id;
-  const unsigned damage;
+  const id_type unit_id;
+  const param_type damage;
   bool operator==(const Description<CmdType::M_ATCK>& rhs) const {
       return unit_id == rhs.unit_id && damage == rhs.damage;
   }
@@ -30,9 +43,9 @@ using MeleeAttackDescription = Description<CmdType::M_ATCK> ;
 
 template <>
 struct Description<CmdType::R_ATCK> {
-  const unsigned unit_id;
-  const unsigned range;
-  const unsigned damage;
+  const id_type unit_id;
+  const param_type range;
+  const param_type damage;
 
   bool operator==(const Description<CmdType::R_ATCK>& rhs) const {
       return unit_id == rhs.unit_id && range == rhs.range && damage == rhs.damage;
@@ -45,7 +58,7 @@ struct CmdDescription {
     CmdDescription(unsigned id, Description<T> descr) : _type(T), _id(id), _cmd_params(descr){} ;
 
     const CmdType _type;
-    const unsigned _id;
+    const id_type _id;
     const std::any _cmd_params;
 
     template <CmdType Type>
