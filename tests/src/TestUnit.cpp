@@ -231,7 +231,7 @@ TEST(unit, archerFullTest)
         auto com = unit0->process();
         auto cmdDescr = com->execute();
         EXPECT_EQ(cmdDescr._type, CmdType::M_ATCK);
-        MeleeAttackDescription expect{1, str};
+        MeleeAttackDescription expect{1, static_cast<hp_type>(str)};
         EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::M_ATCK>());
         EXPECT_EQ(cmdDescr.get_description<CmdType::M_ATCK>(), expect);
 
@@ -256,7 +256,7 @@ TEST(unit, archerFullTest)
         auto com = unit0->process();
         auto cmdDescr = com->execute();
         EXPECT_EQ(cmdDescr._type, CmdType::R_ATCK);
-        RangeAttackDescription expect{1, rRange ,agility};
+        RangeAttackDescription expect{1, rRange ,static_cast<hp_type>(agility)};
         EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::R_ATCK>());
         EXPECT_EQ(cmdDescr.get_description<CmdType::R_ATCK>(), expect);
 
@@ -281,7 +281,7 @@ TEST(unit, archerFullTest)
         auto com = unit0->process();
         auto cmdDescr = com->execute();
         EXPECT_EQ(cmdDescr._type, CmdType::R_ATCK);
-        RangeAttackDescription expect{1, rRange ,agility};
+        RangeAttackDescription expect{1, rRange, static_cast<hp_type>(agility)};
         EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::R_ATCK>());
         EXPECT_EQ(cmdDescr.get_description<CmdType::R_ATCK>(), expect);
 
@@ -320,10 +320,9 @@ TEST(unit, archerFullTest)
         {
             auto cmdDescr = com->execute();
             EXPECT_EQ(cmdDescr._type, CmdType::R_ATCK);
-            RangeAttackDescription expect{1, rRange ,agility};
+            RangeAttackDescription expect{1, rRange, static_cast<hp_type>(agility)};
             EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::R_ATCK>());
             EXPECT_EQ(cmdDescr.get_description<CmdType::R_ATCK>(), expect);
-            std::cout << *map;
         }
 
         unit1->set_march_position(_0);
@@ -336,14 +335,13 @@ TEST(unit, archerFullTest)
             EXPECT_EQ(cmdDescr.get_description<CmdType::MOVE>(), expect);
 
             UpdateUnitPosition(unit1, cmdDescr.get_description<CmdType::MOVE>(), map);
-            std::cout << *map;
         }
 
         com = unit0->process();
         {
             auto cmdDescr = com->execute();
             EXPECT_EQ(cmdDescr._type, CmdType::R_ATCK);
-            RangeAttackDescription expect{1, rRange ,agility};
+            RangeAttackDescription expect{1, rRange, static_cast<hp_type>(agility)};
             EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::R_ATCK>());
             EXPECT_EQ(cmdDescr.get_description<CmdType::R_ATCK>(), expect);
         }        
@@ -356,13 +354,12 @@ TEST(unit, archerFullTest)
             EXPECT_EQ(cmdDescr.get_description<CmdType::MOVE>(), expect);
 
             UpdateUnitPosition(unit1, cmdDescr.get_description<CmdType::MOVE>(), map);
-            std::cout << *map;
         }        
         com = unit1->process();
         {
             auto cmdDescr = com->execute();
             EXPECT_EQ(cmdDescr._type, CmdType::R_ATCK);
-            RangeAttackDescription expect{0, rRange1 ,agility};
+            RangeAttackDescription expect{0, rRange1, static_cast<hp_type>(agility)};
             EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::R_ATCK>());
             EXPECT_EQ(cmdDescr.get_description<CmdType::R_ATCK>(), expect);
         }

@@ -1,4 +1,5 @@
 #include "DefaultFunctions.hpp"
+#include "../UnitTypes.hpp"
 
 #include <memory>
 
@@ -53,7 +54,7 @@ std::shared_ptr<UnitCommand<MeleeAttackDescription>> MeleeAtcFunction(std::share
     {
         MeleeAttackDescription atcDescr {
                 GetAtckTarget(unitsAround)->get_id(),
-                uRef->get_param_value("strength")
+                static_cast<hp_type>(uRef->get_param_value("strength"))
         };
         return std::make_shared<UnitCommand<MeleeAttackDescription>>(uRef->get_id(), atcDescr);
     }
@@ -76,7 +77,7 @@ std::shared_ptr<UnitCommand<RangeAttackDescription>> RangeAtcFunction(std::share
             RangeAttackDescription descr {
                     GetAtckTarget(unitsAround)->get_id(),
                     uRef->get_param_value("rRange"),
-                    uRef->get_param_value("agility")
+                    static_cast<hp_type>(uRef->get_param_value("agility"))
             };
             return std::make_shared<UnitCommand<RangeAttackDescription>>(uRef->get_id(), descr);
         }

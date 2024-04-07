@@ -8,6 +8,7 @@ namespace sw::mngr::cmd {
 enum class CmdType { UNDEF = 0, SKIP, SPAWN, MOVE, M_ATCK, R_ATCK };
 using delta_type = map::Point::coord_type;
 using param_type = units::param_type;
+using hp_type = units::hp_type;
 using id_type = units::id_type;
 
 template <CmdType Type>
@@ -39,7 +40,7 @@ using MoveDescription = Description<CmdType::MOVE> ;
 template <>
 struct Description<CmdType::M_ATCK> {
   const id_type unit_id;
-  const param_type damage;
+  const hp_type damage;
   bool operator==(const Description<CmdType::M_ATCK>& rhs) const {
       return unit_id == rhs.unit_id && damage == rhs.damage;
   }
@@ -50,7 +51,7 @@ template <>
 struct Description<CmdType::R_ATCK> {
   const id_type unit_id;
   const param_type range;
-  const param_type damage;
+  const hp_type damage;
 
   bool operator==(const Description<CmdType::R_ATCK>& rhs) const {
       return unit_id == rhs.unit_id && range == rhs.range && damage == rhs.damage;

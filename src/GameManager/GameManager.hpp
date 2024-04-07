@@ -3,12 +3,15 @@
 //
 
 #pragma once
+#include <memory>
 #include <queue>
 #include "../Map/IMap.hpp"
 #include "../Units/IUnit.hpp"
-#include "GameSystem.hpp"
+#include "IGameSystem.hpp"
 #include "../Units/UnitBuilder.hpp"
 #include "../Units/Unit.hpp"
+#include "../Units/UnitTypes.hpp"
+#include "../Map/Coords.hpp"
 
 namespace sw::mngr {
 
@@ -24,11 +27,17 @@ public:
     
     void SpawnUnit(const units::WarriorDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord);
     void SpawnUnit(const units::ArcherDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord);
+
+    unit_type GetUnitById(const units::id_type& id);
+    void SetMarchForUnit(const units::id_type& id, const map::Point& marchAim);
+private:
+    void SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord);
 private:
     units_storage_type _unitsStorage;
     map_type _map;
     std::unique_ptr<IGameSystem> _gameSystem;
     std::queue<cmd::CmdDescription> _commandsQueue;
+
 };
 
 

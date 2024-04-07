@@ -6,7 +6,7 @@ namespace sw::mngr {
 class IGameSystem
 {
 public:
-    virtual void execute(const cmd::IUnitCommand &cmd) = 0;
+    virtual bool execute(const cmd::IUnitCommand &cmd) = 0;
     virtual ~IGameSystem() = default;
 };
     
