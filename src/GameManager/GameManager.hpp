@@ -5,6 +5,8 @@
 #pragma once
 #include <memory>
 #include <queue>
+#include <sys/_types/_id_t.h>
+#include <utility>
 #include "../Map/IMap.hpp"
 #include "../Units/IUnit.hpp"
 #include "IGameSystem.hpp"
@@ -38,6 +40,7 @@ public:
 
     void WaitOneGameTick();
 private:
+    std::queue<std::pair<units::id_type, std::shared_ptr<cmd::IUnitCommand>>> CheckUnitsState();
     void SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord);
 private:
     units_storage_type _unitsStorage;

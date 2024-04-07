@@ -48,9 +48,9 @@ public:
     virtual ~IUnit() = default;
     
     // Перегрузка оператора вывода для вывода карты в поток
-    friend std::ostream &operator<<(std::ostream &os, const IUnit &map)
+    friend std::ostream &operator<<(std::ostream &os, const IUnit &unit)
     {
-        switch (map.get_class())
+        switch (unit.get_class())
         {
             case UnitClass::UNDEF:
                 os << "U";
@@ -62,6 +62,7 @@ public:
                 os << "A";
                 break;
         }
+        os << "(" << unit.get_id() << "," << unit.get_hp() << ")" ;
         return os;
     };
 };

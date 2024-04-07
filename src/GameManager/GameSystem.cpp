@@ -58,6 +58,20 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
             }
             break;
         }
+        case cmd::CmdType::DEAD:
+        {
+            std::cout << "DEAD" << std::endl;
+            const auto descr = commandRes.get_description<cmd::CmdType::DEAD>();
+            
+            if(auto unit = _gameManager.GetUnitById(commandRes._id))
+            {
+                const auto coord = unit->get_unit_position();
+                _map->deleteUnit(coord._x, coord._y);
+                res = true;
+            }
+            break;
+        }
+
         case cmd::CmdType::MOVE:
         {
             std::cout << "MOVE" << std::endl;
@@ -91,7 +105,9 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
         }
         case cmd::CmdType::UNDEF:
             throw std::runtime_error("Undefined command type!");
-    }
+
+break;
+}
 
     return res;
 }

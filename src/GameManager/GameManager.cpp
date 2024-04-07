@@ -70,17 +70,39 @@ void GameManager::SetMarchForUnit(const units::id_type& id, const map::Point& ma
         throw std::runtime_error{"Unknown ID!"};
 }
 
+std::queue<std::pair<units::id_type, std::shared_ptr<cmd::IUnitCommand>>> GameManager::CheckUnitsState()
+{
+    std::queue<std::pair<units::id_type, std::shared_ptr<cmd::IUnitCommand>>> res;
+    for(const auto& unitPair : _unitsStorage)
+    {
+        if(const auto unit = unitPair.second; unit->get_state() == units::UnitState::DEAD)
+            res.push({
+            unitPair.first,
+            std::make_shared<UnitCommand<DeadDescription>>(unit->get_id(), DeadDescription{})
+            });
+    }
+    return res;
+}
+
 void GameManager::WaitOneGameTick()
 {
-    for(auto& unit : _unitsStorage)
-        _commandsQueue.push(unit.second->process());
+    for(auto& unitPair : _unitsStorage)
+        _commandsQueue.push(unitPair.second->process());
 
     while (!_commandsQueue.empty()) {
-        _gameSystem->execute(*_commandsQueue.front().get());
+        _gameSystem->execute(*_commandsQueue.front());
         _commandsQueue.pop();
     }
 
-    
+
+    auto afterTurnCommandQueue = CheckUnitsState();
+    while (!afterTurnCommandQueue.empty()) {
+        if(const auto& front = afterTurnCommandQueue.front(); _gameSystem->execute(*front.second))
+        {
+            _unitsStorage.erase(front.first);
+        }
+        afterTurnCommandQueue.pop();
+    }
 }
 
 } // sw
