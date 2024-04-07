@@ -128,8 +128,16 @@ TEST(map, testGetUnitsAroundFromTo)
         EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
     }
     {
+        const auto &res = map.getUnitsAround(2, 2, 2, 2);
+        EXPECT_EQ(res.size(), 2);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit3) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
+    }
+    {
         const auto &res = map.getUnitsAround(3, 3, 1, 1);
-        EXPECT_EQ(res.size(), 0);
+        EXPECT_EQ(res.size(), 2);
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) != res.end());
+        EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
     }
     {
         const auto &res = map.getUnitsAround(3, 3, 1, 1000);

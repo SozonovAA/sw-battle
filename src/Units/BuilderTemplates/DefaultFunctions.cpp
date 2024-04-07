@@ -65,12 +65,12 @@ std::shared_ptr<UnitCommand<RangeAttackDescription>> RangeAtcFunction(std::share
     const auto unitPosition = uRef->get_unit_position();
     
     // что бы потом не фильтровать по расстоянию, разбиваем задачу на атомарные
-    for(int toRange = 3, rRange = uRef->get_param_value("rRange"); toRange <= rRange; ++toRange)
+    for(int toRange = 2, rRange = uRef->get_param_value("rRange"); toRange <= rRange; ++toRange)
     {
         if(const auto &unitsAround = map->getUnitsAround(
             unitPosition._x,
             unitPosition._y,
-            toRange - 1,
+            toRange,
             toRange); !unitsAround.empty())
         {
             RangeAttackDescription descr {

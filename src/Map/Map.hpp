@@ -89,7 +89,7 @@ public:
     getUnitsAround(unsigned x, unsigned y, unsigned fromRadius, unsigned toRadius) const override
     {
         std::vector<std::shared_ptr<EntityT>> units;
-        if (fromRadius >= toRadius || toRadius <= 0)
+        if (fromRadius > toRadius || toRadius <= 0)
             return units;
 
         unsigned x_min = std::max(0, static_cast<int>(x - toRadius));
