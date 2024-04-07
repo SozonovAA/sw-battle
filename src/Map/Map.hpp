@@ -118,7 +118,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Map &map)
     {
         os << "---------------" << std::endl;
-        os << " # ";
+        os << " #  ";
         for (int j = 0; j < map._cols; ++j)
             os << j << std::setw(7);
         
@@ -133,7 +133,7 @@ public:
                     os << *entity;
                 } else
                 {
-                    os << "." <<  std::setw(7);
+                    os << "." << std::setw(7);
                 }
             }
             os << std::endl;
