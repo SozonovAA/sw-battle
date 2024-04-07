@@ -28,6 +28,9 @@ SpawnCommand GenerateSpawnCommand(std::shared_ptr<units::IUnit> unit, const map:
 
 void GameManager::SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord)
 {
+    if(!_gameSystem)
+        throw std::runtime_error{"The GameSystem is not created!"};
+
     if(_gameSystem->execute(GenerateSpawnCommand(unit, coord)))
     {
         if(!_unitsStorage.emplace(unit->get_id(), unit).second)
@@ -37,17 +40,21 @@ void GameManager::SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Po
         throw std::runtime_error{"The error of the spawn unit!"};
 }
 
-void GameManager::SpawnUnit(const units::WarriorDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord)
+std::shared_ptr<const units::IUnit> GameManager::SpawnUnit(const units::WarriorDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord)
 {
-    SpawnProcess(WarriorBuilder(descr, _map).create_unit(uDescr), coord);
+    auto unit = WarriorBuilder(descr, _map).create_unit(uDescr);
+    SpawnProcess(unit, coord);
+    return unit;
 }
 
-void GameManager::SpawnUnit(const units::ArcherDescription& descr, const units::UnitDescription& uDescr,  const map::Point& coord)
+std::shared_ptr<const units::IUnit> GameManager::SpawnUnit(const units::ArcherDescription& descr, const units::UnitDescription& uDescr,  const map::Point& coord)
 {
-    SpawnProcess(ArcherBuilder(descr, _map).create_unit(uDescr), coord);
+    auto unit = ArcherBuilder(descr, _map).create_unit(uDescr);
+    SpawnProcess(unit, coord);
+    return unit;
 }
 
-GameManager::unit_type GameManager::GetUnitById(const units::id_type& id)
+GameManager::unit_type GameManager::GetUnitById(const units::id_type& id) const
 {
     unit_type res {};
     if(auto it = _unitsStorage.find(id); it != _unitsStorage.end())
@@ -63,5 +70,17 @@ void GameManager::SetMarchForUnit(const units::id_type& id, const map::Point& ma
         throw std::runtime_error{"Unknown ID!"};
 }
 
+void GameManager::WaitOneGameTick()
+{
+    for(auto& unit : _unitsStorage)
+        _commandsQueue.push(unit.second->process());
+
+    while (!_commandsQueue.empty()) {
+        _gameSystem->execute(*_commandsQueue.front().get());
+        _commandsQueue.pop();
+    }
+
+    
+}
 
 } // sw

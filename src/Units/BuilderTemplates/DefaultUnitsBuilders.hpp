@@ -39,10 +39,10 @@ class WarriorBuilder : public UnitBuilder<UnitClass::WAR, Unit>
     }
 };
 
-class ArcherBuilder : public UnitBuilder<UnitClass::WAR, Unit>
+class ArcherBuilder : public UnitBuilder<UnitClass::ARCH, Unit>
 {
     public:
-    using type = UnitBuilder<UnitClass::WAR, Unit>;
+    using type = UnitBuilder<UnitClass::ARCH, Unit>;
     ArcherBuilder(const ArcherDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map)
     {
         add_param("strength", descr.strength);

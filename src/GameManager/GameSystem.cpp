@@ -1,6 +1,7 @@
 #include "GameSystem.hpp"
 #include "Command/CmdDescriptions.hpp"
 #include <any>
+#include <iostream>
 #include <memory>
 
 namespace sw::mngr {
@@ -22,7 +23,7 @@ bool UpdateUnitPosition(std::shared_ptr<IUnit> unit, MoveDescription expect, std
     return res;
 }
 
-GameSystem::GameSystem(std::shared_ptr<map_type> map, std::shared_ptr<GameManager> gameManager) :
+GameSystem::GameSystem(std::shared_ptr<map_type> map, const GameManager& gameManager) :
     _map(map),
     _gameManager(gameManager)
     {};
@@ -36,16 +37,21 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
     {
         case cmd::CmdType::SKIP:
         {
+            std::cout << "SKIP" << std::endl;
             //todo:func
             break;
         }
         case cmd::CmdType::SPAWN:
         {
+            std::cout << "SPAWN" << std::endl;
             const auto descr = commandRes.get_description<cmd::CmdType::SPAWN>();
             try {
                 const auto unitPtr = std::any_cast<std::shared_ptr<IUnit>>(descr.unit);
                 if(_map->addUnit(descr.coord._x, descr.coord._y, unitPtr) == 0)
+                {
+                    unitPtr->set_unit_position({descr.coord._x, descr.coord._y});
                     res = true;
+                }
             } catch (std::bad_any_cast& ex)
             {
                 res = false;
@@ -54,16 +60,18 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
         }
         case cmd::CmdType::MOVE:
         {
+            std::cout << "MOVE" << std::endl;
             const auto descr = commandRes.get_description<cmd::CmdType::MOVE>();
-            if(auto unit = _gameManager->GetUnitById(commandRes._id))
+            if(auto unit = _gameManager.GetUnitById(commandRes._id))
                 res = UpdateUnitPosition(unit, descr, _map);
 
             break;
         }
         case cmd::CmdType::M_ATCK:
         {
+            std::cout << "M_ATCK" << std::endl;
             const auto descr = commandRes.get_description<cmd::CmdType::M_ATCK>();
-            if(auto unit = _gameManager->GetUnitById(descr.unit_id))
+            if(auto unit = _gameManager.GetUnitById(descr.unit_id))
             {
                 unit->change_hp(-descr.damage);
                 res = true;
@@ -72,8 +80,9 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
         }
         case cmd::CmdType::R_ATCK:
         {
+            std::cout << "R_ATCK" << std::endl;
             const auto descr = commandRes.get_description<cmd::CmdType::R_ATCK>();
-                if(auto unit = _gameManager->GetUnitById(descr.unit_id))
+                if(auto unit = _gameManager.GetUnitById(descr.unit_id))
             {
                 unit->change_hp(-descr.damage);
                 res = true;

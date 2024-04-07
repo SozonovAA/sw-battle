@@ -24,7 +24,7 @@ public:
     
     std::shared_ptr<IUnit> create_unit(const UnitDescription& ud)
     {
-        auto ret = std::make_unique<unit_type>(unit_type(Type, ud.id, ud.hp));
+        auto ret = std::make_unique<unit_type>(unit_type(Type, ud));
         ret->set_main_params(_march_method, _params, _actions);
         return ret;
     };

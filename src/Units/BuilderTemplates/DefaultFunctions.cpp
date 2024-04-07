@@ -8,7 +8,7 @@ using namespace mngr::cmd;
 std::shared_ptr<IUnitCommand> DefaultMarchMethod(std::shared_ptr<IUnit> uRef)
 {
     map::Point res;
-    const unsigned stepCount = 1;
+    const unsigned stepCount = uRef->get_step_count();
     const auto currPos = uRef->get_unit_position();
     const auto marchPos = uRef->get_march_position();
     const auto deltaPos = marchPos - currPos;

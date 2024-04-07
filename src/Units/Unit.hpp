@@ -3,13 +3,15 @@
 #include <cstdint>
 
 #include "UnitBuilder.hpp"
+#include "UnitTypes.hpp"
 
 namespace sw::units {
 class Unit : public IUnit
 {
 public:
     //ctors
-    Unit(UnitClass type, id_type id, hp_type hp);
+    Unit(UnitClass type, const UnitDescription& ud);
+    Unit(UnitClass type, id_type id, hp_type hp, param_type step_count);
     Unit(const Unit &) = default;
     Unit(Unit &&) = default;
     Unit &operator=(const Unit &) = delete;
@@ -27,6 +29,7 @@ public:
     [[nodiscard]] UnitClass get_class() const override;
     [[nodiscard]] id_type get_id() const override;
     [[nodiscard]] UnitState get_state() const override;
+    [[nodiscard]] param_type get_step_count() const override;
     hp_type get_hp() const override;
     void change_hp(const hp_type& hp) override;
     void set_main_params(action_type march_action, params_storage_type params, actions_storage_type actions) override;
@@ -44,6 +47,7 @@ protected:
     action_type _march_method;
     actions_storage_type _priority_actions_storage;
     hp_type _hp;
+    param_type _step_count;
 };
     
 } //namespace sw::units

@@ -3,7 +3,14 @@
 
 namespace sw::units {
 
-Unit::Unit(UnitClass type, id_type id, hp_type hp) : _type(type), _id(id), _hp(hp) {}
+Unit::Unit(UnitClass type, id_type id, hp_type hp, param_type step_count) : _type(type), _id(id), _hp(hp), _step_count(step_count) {}
+
+Unit::Unit(UnitClass type, const UnitDescription& ud): 
+    _type(type),
+    _id(ud.id),
+    _hp(ud.hp),
+    _step_count(ud.step_count) {}
+
 
 std::shared_ptr<mngr::cmd::IUnitCommand> Unit::process()
 {
@@ -56,6 +63,10 @@ UnitState Unit::get_state() const
     return _state;
 }
 
+param_type Unit::get_step_count() const 
+{
+    return _step_count;
+}
 
 Unit::hp_type Unit::get_hp() const
 {

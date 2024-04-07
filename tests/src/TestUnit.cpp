@@ -15,6 +15,7 @@ void UpdateUnitPosition(std::shared_ptr<IUnit> unit0, MoveDescription expect, st
     map->moveUnit(uPos1._x, uPos1._y, newUPos1._x, newUPos1._y);
     unit0->set_unit_position( newUPos1 );
 }
+
 TEST(unit, skipTest)
 {
     std::shared_ptr<IMap<units::IUnit>> map = std::make_shared<Map<IUnit>>(10, 10);

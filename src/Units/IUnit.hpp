@@ -38,6 +38,7 @@ public:
     [[nodiscard]] virtual UnitClass get_class() const = 0;
     [[nodiscard]] virtual id_type get_id() const = 0;
     [[nodiscard]] virtual UnitState get_state() const = 0;
+    [[nodiscard]] virtual param_type get_step_count() const = 0;
     virtual hp_type get_hp() const = 0;
     virtual void change_hp(const hp_type& hp) = 0;
     virtual void

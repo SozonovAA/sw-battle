@@ -16,6 +16,7 @@ struct UnitDescription
 {
     id_type id;
     hp_type hp;
+    param_type step_count = 1;
 };
 
 struct WarriorDescription
