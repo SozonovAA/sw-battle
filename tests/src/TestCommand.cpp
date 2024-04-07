@@ -3,9 +3,11 @@
 #include <stdexcept>
 #include "../../src/Map/Map.hpp"
 #include "../../src/Units/Unit.hpp"
+#include "../../src/Units/BuilderTemplates/DefaultFunctions.hpp"
 
-namespace sw::map::test {
-using namespace mngr::cmd;
+namespace sw::mngr::cmd::test {
+using namespace map;
+using namespace units::templates;
 TEST(command, testExecute)
 {
     {
@@ -46,7 +48,7 @@ TEST(command, defaultMarchTest)
     {
         unit->set_march_position({7, 7});
         const Point expectPoint (1, 1);
-        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveCommand = DefaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
         EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
         EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
@@ -54,7 +56,7 @@ TEST(command, defaultMarchTest)
     {
         unit->set_march_position({4, 4});
         const Point expectPoint (-1, -1);
-        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveCommand = DefaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
         EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
         EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
@@ -62,7 +64,7 @@ TEST(command, defaultMarchTest)
     {
         unit->set_march_position({5, 5});
         const Point expectPoint (0, 0);
-        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveCommand = DefaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
         EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
         EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
@@ -70,7 +72,7 @@ TEST(command, defaultMarchTest)
     {
         unit->set_march_position({4, 5});
         const Point expectPoint (-1, 0);
-        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveCommand = DefaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
         EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
         EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
@@ -78,7 +80,7 @@ TEST(command, defaultMarchTest)
     {
         unit->set_march_position({5, 4});
         const Point expectPoint (0, -1);
-        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveCommand = DefaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
         EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
         EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
@@ -88,7 +90,7 @@ TEST(command, defaultMarchTest)
     {
         unit->set_march_position({5, 4});
         const Point expectPoint (1, 1);
-        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveCommand = DefaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
         EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
         EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
@@ -96,7 +98,7 @@ TEST(command, defaultMarchTest)
     {
         unit->set_march_position({-6, -6});
         const Point expectPoint (-1, -1);
-        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveCommand = DefaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
         EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
         EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
@@ -104,7 +106,7 @@ TEST(command, defaultMarchTest)
     {
         unit->set_march_position({1000, -6});
         const Point expectPoint (1, -1);
-        const auto moveCommand = units::DefaultMarchMethod(*unit.get());
+        const auto moveCommand = DefaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().get_description<CmdType::MOVE>();
         EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
         EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
@@ -113,39 +115,40 @@ TEST(command, defaultMarchTest)
 
 TEST(command, cmdPriorityTest)
 {
+    using namespace units;
     units::UnitBuilder<units::UnitClass::WAR, units::Unit> warBuilder;
     const auto maDescr = mngr::cmd::MeleeAttackDescription{1, 12};
     const auto mvDescr = mngr::cmd::MoveDescription{1, 12};
     const auto raDescr = mngr::cmd::RangeAttackDescription{1, 12, 123};
     warBuilder.add_action_by_priority(
             0,
-            [maDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            [maDescr](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
                 std::shared_ptr<mngr::cmd::IUnitCommand> ret;
                 
-                if (auto id = uRef.get_id(); id == 0)
+                if (auto id = uRef->get_id(); id == 0)
                     ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::MeleeAttackDescription>>(
-                            uRef.get_id(), maDescr);
+                            uRef->get_id(), maDescr);
                 
                 return ret;
             });
     warBuilder.add_action_by_priority(
         1,
-        [raDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+        [raDescr](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
         {
             std::shared_ptr<mngr::cmd::IUnitCommand> ret;
             
-            if (auto id = uRef.get_id(); id == 1)
+            if (auto id = uRef->get_id(); id == 1)
                 ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::RangeAttackDescription>>(
-                        uRef.get_id(), raDescr);
+                        uRef->get_id(), raDescr);
             
             return ret;
         }
     );
     warBuilder.set_march_method(
-        [](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+        [](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
         {
-            return units::DefaultMarchMethod(uRef);
+            return DefaultMarchMethod(uRef);
         }
     );
     {
@@ -178,26 +181,26 @@ TEST(command, cmdPriorityTest)
     units::UnitBuilder<units::UnitClass::ARCH, units::Unit> archBuilder;
     archBuilder.add_action_by_priority(
             10,
-            [raDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            [raDescr](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
                 std::shared_ptr<mngr::cmd::IUnitCommand> ret;
                 
-                if (auto id = uRef.get_id(); id % 2)
+                if (auto id = uRef->get_id(); id % 2)
                     ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::RangeAttackDescription>>(
-                            uRef.get_id(),
+                            uRef->get_id(),
                             raDescr);
                 
                 return ret;
             });
     archBuilder.add_action_by_priority(
             1,
-            [mvDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            [mvDescr](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
                 std::shared_ptr<mngr::cmd::IUnitCommand> ret;
 
-                if (auto id = uRef.get_id(); id % 2 && id < 10)
+                if (auto id = uRef->get_id(); id % 2 && id < 10)
                     ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::MoveDescription>>(
-                            uRef.get_id(),
+                            uRef->get_id(),
                             mvDescr);
                             
                 
@@ -205,11 +208,11 @@ TEST(command, cmdPriorityTest)
             });
     archBuilder.add_action_by_priority(
             1000,
-            [maDescr](units::IUnit &uRef, bool f) -> std::shared_ptr<mngr::cmd::IUnitCommand>
+            [maDescr](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
                 std::shared_ptr<mngr::cmd::IUnitCommand> ret;
                 ret = std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::MeleeAttackDescription>>(
-                        uRef.get_id(), maDescr);
+                        uRef->get_id(), maDescr);
                 
                 return ret;
             });

@@ -9,11 +9,11 @@ std::shared_ptr<mngr::cmd::IUnitCommand> Unit::process()
 {
     for (const auto &it: _priority_actions_storage)
     {
-        if (auto ptr = it.second(*this, false))
+        if (auto ptr = it.second(std::make_shared<Unit>(*this)))
             return ptr;
     }
     if (_march_method) {
-        return _march_method(*this, false);
+        return _march_method(std::make_shared<Unit>(*this));
     }
     return {};
 }
