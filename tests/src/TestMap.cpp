@@ -10,7 +10,7 @@ UnitBuilderT ub;
 TEST(map, testAddUnitToEmptyCell)
 {
     Map<units::IUnit> map(5, 5);
-    EXPECT_EQ(map.addUnit(2, 3, ub.create_unit(0, 0)), 0); // Ожидаем успешное добавление
+    EXPECT_EQ(map.addUnit(2, 3, ub.create_unit({0, 0})), 0); // Ожидаем успешное добавление
 }
 
 // Тест для метода addUnit: добавление юнита в занятую клетку
@@ -18,15 +18,15 @@ TEST(map, testAddUnitToOccupiedCell)
 {
     Map<units::IUnit> map(5, 5);
     
-    map.addUnit(2, 3, ub.create_unit(0, 0));
-    EXPECT_EQ(map.addUnit(2, 3, ub.create_unit(0, 0)), -2); // Ожидаем код ошибки -2 (клетка уже занята)
+    map.addUnit(2, 3, ub.create_unit({0, 0}));
+    EXPECT_EQ(map.addUnit(2, 3, ub.create_unit({0, 0})), -2); // Ожидаем код ошибки -2 (клетка уже занята)
 }
 
 // Тест для метода getUnit: получение юнита из занятой клетки
 TEST(map, testGetUnitFromOccupiedCell)
 {
     Map<units::IUnit> map(5, 5);
-    std::shared_ptr<units::IUnit> unit = ub.create_unit(0, 0);
+    std::shared_ptr<units::IUnit> unit = ub.create_unit({0, 0});
     map.addUnit(2, 3, unit);
     std::shared_ptr<units::IUnit> retrievedUnit = map.getUnit(2, 3);
     EXPECT_EQ(retrievedUnit, unit); // Ожидаем получение того же самого юнита
@@ -37,7 +37,7 @@ TEST(map, testMoveUnitToEmptyCell)
 {
     Map<units::IUnit> map(5, 5);
     
-    map.addUnit(2, 3, ub.create_unit(0, 0));
+    map.addUnit(2, 3, ub.create_unit({0, 0}));
     EXPECT_EQ(map.moveUnit(2, 3, 3, 4), 0); // Ожидаем успешное перемещение
 }
 
@@ -45,8 +45,8 @@ TEST(map, testMoveUnitToEmptyCell)
 TEST(map, testMoveUnitToOccupiedCell)
 {
     Map<units::IUnit> map(5, 5);
-    std::shared_ptr<units::IUnit> unit1 = ub.create_unit(0, 0);
-    std::shared_ptr<units::IUnit> unit2 = ub.create_unit(0, 0);
+    std::shared_ptr<units::IUnit> unit1 = ub.create_unit({0, 0});
+    std::shared_ptr<units::IUnit> unit2 = ub.create_unit({0, 0});
     map.addUnit(2, 3, unit1);
     map.addUnit(3, 4, unit2);
     EXPECT_EQ(map.moveUnit(2, 3, 3, 4), -3); // Ожидаем код ошибки -3 (клетка уже занята)
@@ -56,8 +56,8 @@ TEST(map, testMoveUnitToOccupiedCell)
 TEST(map, testGetUnitsAround)
 {
     Map<units::IUnit> map(5, 5);
-    const std::shared_ptr<units::IUnit> unit1 = ub.create_unit(1, 0);
-    std::shared_ptr<units::IUnit> unit2 = ub.create_unit(2, 0);
+    const std::shared_ptr<units::IUnit> unit1 = ub.create_unit({1, 0});
+    std::shared_ptr<units::IUnit> unit2 = ub.create_unit({2, 0});
     map.addUnit(2, 3, unit1);
     map.addUnit(3, 4, unit2);
     
@@ -106,9 +106,9 @@ TEST(map, testGetUnitsAroundFromTo)
     Map<units::IUnit> map(5, 5);
 
     // Создание и добавление юнитов на карту
-    const std::shared_ptr<units::IUnit> unit1 = ub.create_unit(1, 0);
-    const std::shared_ptr<units::IUnit> unit2 = ub.create_unit(2, 0);
-    const std::shared_ptr<units::IUnit> unit3 = ub.create_unit(3, 0);
+    const std::shared_ptr<units::IUnit> unit1 = ub.create_unit({1, 0});
+    const std::shared_ptr<units::IUnit> unit2 = ub.create_unit({2, 0});
+    const std::shared_ptr<units::IUnit> unit3 = ub.create_unit({3, 0});
 
     map.addUnit(2, 3, unit1);
     map.addUnit(3, 4, unit2);

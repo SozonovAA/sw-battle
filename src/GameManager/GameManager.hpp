@@ -22,8 +22,8 @@ public:
     using unit_type = map_type::element_type::entity_storage_type;
     using units_storage_type = std::map<units::IUnit::id_type, unit_type>;
     
-    void SpawnUnit(const units::WarriorDescription& descr, const map::Point& coord);
-    void SpawnUnit(const units::ArcherDescription& descr, const map::Point& coord);
+    void SpawnUnit(const units::WarriorDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord);
+    void SpawnUnit(const units::ArcherDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord);
 private:
     units_storage_type _unitsStorage;
     map_type _map;

@@ -5,13 +5,18 @@
 #include "../../Map/Coords.hpp"
 
 namespace sw::mngr::cmd {
-enum class CmdType { UNDEF = 0, SPAWN, MOVE, M_ATCK, R_ATCK };
+enum class CmdType { UNDEF = 0, SKIP, SPAWN, MOVE, M_ATCK, R_ATCK };
 using delta_type = map::Point::coord_type;
 using param_type = units::param_type;
 using id_type = units::id_type;
 
 template <CmdType Type>
 struct Description;
+
+template <>
+struct Description<CmdType::SKIP> {
+};
+using SkipDescription = Description<CmdType::SKIP> ;
 
 template <>
 struct Description<CmdType::SPAWN> {

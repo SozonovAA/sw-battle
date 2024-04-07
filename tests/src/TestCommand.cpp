@@ -43,7 +43,7 @@ TEST(command, defaultMarchTest)
     const auto mvDescr = mngr::cmd::MoveDescription{1, 12};
     const auto raDescr = mngr::cmd::RangeAttackDescription{1, 12, 123};
 
-    auto unit = warBuilder.create_unit(0, 0);
+    auto unit = warBuilder.create_unit({0, 0});
     unit->set_unit_position({5, 5});
     {
         unit->set_march_position({7, 7});
@@ -116,7 +116,7 @@ TEST(command, defaultMarchTest)
 TEST(command, cmdPriorityTest)
 {
     using namespace units;
-    units::UnitBuilder<units::UnitClass::WAR, units::Unit> warBuilder;
+    units::UnitBuilder<units::UnitClass::UNDEF, units::Unit> warBuilder;
     const auto maDescr = mngr::cmd::MeleeAttackDescription{1, 12};
     const auto mvDescr = mngr::cmd::MoveDescription{1, 12};
     const auto raDescr = mngr::cmd::RangeAttackDescription{1, 12, 123};
@@ -152,21 +152,21 @@ TEST(command, cmdPriorityTest)
         }
     );
     {
-        const auto cmd = warBuilder.create_unit(0, 0)->process()->execute();
+        const auto cmd = warBuilder.create_unit({0, 0})->process()->execute();
         EXPECT_EQ(cmd._type, mngr::cmd::CmdType::M_ATCK);
         EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::M_ATCK>());
         EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>(), std::bad_any_cast);
         EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::M_ATCK>(), maDescr);
     }
     {
-        const auto cmd = warBuilder.create_unit(1, 0)->process()->execute();
+        const auto cmd = warBuilder.create_unit({1, 0})->process()->execute();
         EXPECT_EQ(cmd._type, mngr::cmd::CmdType::R_ATCK);
         EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::R_ATCK>());
         EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>(), std::bad_any_cast);
         EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::R_ATCK>(), raDescr);
     }
     {
-        auto unit = warBuilder.create_unit(2, 0);
+        auto unit = warBuilder.create_unit({2, 0});
         unit->set_unit_position({5, 5});
         unit->set_march_position({7, 7});
         const auto cmd = unit->process()->execute();
@@ -218,21 +218,21 @@ TEST(command, cmdPriorityTest)
             });
 
     {
-        const auto cmd = archBuilder.create_unit(1, 0)->process()->execute();
+        const auto cmd = archBuilder.create_unit({1, 0})->process()->execute();
         EXPECT_EQ(cmd._type, mngr::cmd::CmdType::MOVE);
         EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>());
         EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::R_ATCK>(), std::bad_any_cast);
         EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::MOVE>(), mvDescr);
     }
     {
-        const auto cmd = archBuilder.create_unit(11, 0)->process()->execute();
+        const auto cmd = archBuilder.create_unit({11, 0})->process()->execute();
         EXPECT_EQ(cmd._type, mngr::cmd::CmdType::R_ATCK);
         EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::R_ATCK>());
         EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>(), std::bad_any_cast);
         EXPECT_EQ(cmd.get_description<mngr::cmd::CmdType::R_ATCK>(), raDescr);
     }
     {
-        const auto cmd = archBuilder.create_unit(6, 0)->process()->execute();
+        const auto cmd = archBuilder.create_unit({6, 0})->process()->execute();
         EXPECT_EQ(cmd._type, mngr::cmd::CmdType::M_ATCK);
         EXPECT_NO_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::M_ATCK>());
         EXPECT_THROW(auto i = cmd.get_description<mngr::cmd::CmdType::MOVE>(), std::bad_any_cast);

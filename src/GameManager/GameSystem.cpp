@@ -8,6 +8,12 @@ void GameSystem::execute(const cmd::IUnitCommand &cmd)
     const auto &commandRes = cmd.execute();
     switch (commandRes._type)
     {
+        case cmd::CmdType::SKIP:
+        {
+            //todo:func
+            
+            break;
+        }
         case cmd::CmdType::SPAWN:
         {
             const auto &mv = commandRes.get_description<cmd::CmdType::SPAWN>();
@@ -36,7 +42,8 @@ void GameSystem::execute(const cmd::IUnitCommand &cmd)
         }
         case cmd::CmdType::UNDEF:
             throw std::runtime_error("Undefined command type!");
-    }
+break;
+}
 }
     
 } //namespace sw::mngr

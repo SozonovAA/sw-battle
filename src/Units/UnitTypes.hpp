@@ -12,13 +12,13 @@ enum class UnitClass
     ARCH
 };
 
-struct UnitDescriptionBase
+struct UnitDescription
 {
-    hp_type hp;
     id_type id;
+    hp_type hp;
 };
 
-struct WarriorDescription : UnitDescriptionBase
+struct WarriorDescription
 {
     param_type strength;
     param_type mRange;

@@ -4,6 +4,7 @@
 #include <utility>
 
 #include "IUnit.hpp"
+#include "UnitTypes.hpp"
 
 namespace sw::units {
 //todo: concept
@@ -21,9 +22,9 @@ public:
     using params_storage_type = IUnit::params_storage_type;
     using actions_storage_type = IUnit::actions_storage_type;
     
-    std::shared_ptr<IUnit> create_unit(const id_type& id, const hp_type& hp)
+    std::shared_ptr<IUnit> create_unit(const UnitDescription& ud)
     {
-        auto ret = std::make_unique<unit_type>(unit_type(Type, id, hp));
+        auto ret = std::make_unique<unit_type>(unit_type(Type, ud.id, ud.hp));
         ret->set_main_params(_march_method, _params, _actions);
         return ret;
     };

@@ -11,6 +11,9 @@ public:
     virtual int addUnit(unsigned x, unsigned y, entity_storage_type unit) = 0;
     virtual entity_storage_type getUnit(unsigned x, unsigned y) const = 0;
     virtual int moveUnit(unsigned fromX, unsigned fromY, unsigned toX, unsigned toY) = 0;
+
+    virtual entity_storage_type deleteUnit(unsigned x, unsigned y) = 0;
+
     virtual std::vector<entity_storage_type>
     getUnitsAround(unsigned x, unsigned y, unsigned radius) const = 0;
     virtual std::vector<entity_storage_type>

@@ -51,6 +51,17 @@ public:
         _grid[toX][toY] = std::move(_grid[fromX][fromY]);
         return 0;
     }
+
+
+    std::shared_ptr<EntityT> deleteUnit(unsigned x, unsigned y) override
+    {
+        if (x >= _rows || y >= _cols)
+            return {};
+        
+        auto res = _grid[x][y];
+        _grid[x][y] = nullptr;
+        return res;
+    }
     
     // Метод для возвращения всех объектов в радиусе определенного количества клеток вокруг юнита
     std::vector<std::shared_ptr<EntityT>>

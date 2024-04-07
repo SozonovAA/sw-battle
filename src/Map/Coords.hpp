@@ -23,6 +23,14 @@ struct Point
     {
         return Point(_x - other._x, _y - other._y);
     }
+
+    bool operator==(const Point& other) const {
+        return _x == other._x && _y == other._y;
+    }
+
+    bool operator!=(const Point& other) const {
+        return !(*this == other);
+    }
     
     friend std::ostream &operator<<(std::ostream &os, const Point &point)
     {
