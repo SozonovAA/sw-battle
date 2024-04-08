@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iomanip>
 #include <memory>
 #include <functional>
 #include <ostream>
@@ -62,7 +63,7 @@ public:
                 os << "A";
                 break;
         }
-        os << "(" << unit.get_id() << "," << unit.get_hp() << ")" ;
+        os << "(" << std::setw(2) << unit.get_id() << "," << std::setw(2) << unit.get_hp() << ")" ;
         return os;
     };
 };

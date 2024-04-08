@@ -120,20 +120,21 @@ public:
         os << "---------------" << std::endl;
         os << " #  ";
         for (int j = 0; j < map._cols; ++j)
-            os << j << std::setw(7);
+            os << j << std::setw(10);
         
         os << std::endl;
         for (int i = 0; i < map._rows; ++i)
         {
-            os << i << std::setw(3);
+            os << std::setw(4) << i;
             for (int j = 0; j < map._cols; ++j)
             {
                 if (const auto entity = map._grid[j][i])
                 {
-                    os << *entity;
+                    os << "|" << *entity << "|";
                 } else
                 {
-                    os << "." << std::setw(7);
+                    os << "|________|";
+                    //os << "." << std::setw(7);
                 }
             }
             os << std::endl;
