@@ -8,6 +8,8 @@
 #include <IO/Commands/SpawnArcher.hpp>
 #include <IO/Commands/March.hpp>
 #include <IO/Commands/Wait.hpp>
+#include <IO/Commands/WaitPrintMap.hpp>
+#include <memory>
 
 #include "GameManager/GameManager.hpp"
 #include "GameManager/GameSystem.hpp"
@@ -41,10 +43,11 @@ int main(int argc, char **argv)
 
     GameManager gm;
     io::CommandParser parser;
+    std::shared_ptr<LoggableMap<units::IUnit>> map;
     parser.add<io::CreateMap>(
-    	[&gm](auto command)
+    	[&gm, &map](auto command) mutable
     	{
-            gm.create_map<LoggableMap<units::IUnit>, LoggableGameSystem>(command.height, command.width);
+            map = gm.create_map<LoggableMap<units::IUnit>, LoggableGameSystem>(command.height, command.width);
     	}).add<io::SpawnWarrior>(
     	[&gm](auto command)
     	{
@@ -68,8 +71,16 @@ int main(int argc, char **argv)
     	[&gm](auto command)
     	{
             gm.WaitGameTicks(command.ticks);
-    		//printDebug(std::cout, command);
-    	});
+    	}).add<io::WaitPrintMap>(
+    	[&gm, &map](auto command)
+    	{   
+            for(unsigned int i = 0; i < command.ticks; ++i)
+            {
+                std::cout << i <<std::endl;
+                gm.WaitOneGameTick();
+                std::cout << *map;
+            }
+    	});;
     
     parser.parse(file);
     
