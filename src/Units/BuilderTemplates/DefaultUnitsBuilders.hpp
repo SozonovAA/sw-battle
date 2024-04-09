@@ -41,6 +41,13 @@ class WarriorBuilder : public UnitBuilder<UnitClass::WAR, UnitType>
     }
 };
 
+template<class UnitType>
+static std::shared_ptr<units::IUnit> CreateDefaultUnit(const units::WarriorDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map, const units::UnitDescription& uDescr)
+{
+    units::templates::WarriorBuilder<UnitType> builder (descr, map);
+    return builder.create_unit(uDescr);
+}
+
 template<class UnitType = Unit>
 class ArcherBuilder : public UnitBuilder<UnitClass::ARCH, UnitType>
 {
@@ -74,4 +81,11 @@ class ArcherBuilder : public UnitBuilder<UnitClass::ARCH, UnitType>
         );
     }
 };
+
+template<class UnitType>
+static std::shared_ptr<units::IUnit> CreateDefaultUnit(const units::ArcherDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map, const units::UnitDescription& uDescr)
+{
+    units::templates::ArcherBuilder<UnitType> builder (descr, map);
+    return builder.create_unit(uDescr);
+}
 } // namespace sw::units::templates 

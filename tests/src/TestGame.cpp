@@ -32,7 +32,7 @@ TEST(game, spawnTest)
     param_type mana = 1;
     
     auto unit0 = gm.SpawnUnit<LoggableUnit>(ArcherDescription{str, mRange, agility, rRange}, ud0, {5, 0});
-    auto unit1 = gm.SpawnUnit<LoggableUnit>(ArcherDescription{str, mRange, agility, rRange1}, ud1, {9, 9});
+    auto unit1 = gm.SpawnUnit<LoggableUnit>(WarriorDescription{str, mRange}, ud1, {9, 9});
 
     //gm.SetMarchForUnit(unit0->get_id(), {0, 9});
     gm.SetMarchForUnit(unit1->get_id(), {0, 0});

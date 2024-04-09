@@ -33,24 +33,12 @@ public:
         return _gameSystem = std::make_shared<GameSystemT>(_map, *this);
     }
     
-    template<class UnitType>
-    std::shared_ptr<const units::IUnit> SpawnUnit(const units::WarriorDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord)
+    template<class UnitType, class DescriptorType>
+    std::shared_ptr<units::IUnit> SpawnUnit(const DescriptorType& descr, const units::UnitDescription& uDescr, const map::Point& coord)
     {
-        units::templates::WarriorBuilder<UnitType> builder (descr, _map);
-        auto unit = builder.create_unit(uDescr);
+        auto unit = units::templates::CreateDefaultUnit<UnitType>(descr, _map, uDescr);
         SpawnProcess(unit, coord);
         return unit;
-    }
-    
-    template<class UnitType>
-    std::shared_ptr<const units::IUnit> SpawnUnit(const units::ArcherDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord)
-    {
-        units::templates::ArcherBuilder<UnitType> builder (descr, _map);
-        auto unit = builder.create_unit(uDescr);
-        
-        SpawnProcess(unit, coord);
-        return unit;
-
     }
 
     unit_type GetUnitById(const units::id_type& id) const;
