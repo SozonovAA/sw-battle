@@ -8,27 +8,26 @@
 #include <IO/Commands/SpawnArcher.hpp>
 #include <IO/Commands/March.hpp>
 #include <IO/Commands/Wait.hpp>
-#include <IO/System/EventLog.hpp>
-#include <IO/EventLogs/MapCreated.hpp>
-#include <IO/EventLogs/UnitSpawned.hpp>
-#include <IO/EventLogs/MarchStarted.hpp>
-#include <IO/EventLogs/MarchEnded.hpp>
-#include <IO/EventLogs/UnitMoved.hpp>
-#include <IO/EventLogs/UnitDied.hpp>
-#include <IO/EventLogs/UnitAttacked.hpp>
-#include "GameManager/Command/CmdDescriptions.hpp"
-#include "GameManager/Command/IUnitCommand.hpp"
-#include "Units/Unit.hpp"
-#include "Units/UnitBuilder.hpp"
-#include "Map/Map.hpp"
 
-#include <memory>
-#include <vector>
+#include "GameManager/GameManager.hpp"
+#include "GameManager/GameSystem.hpp"
+#include "GameManager/LoggableGameSystem.hpp"
+#include "Map/Coords.hpp"
+#include "Units/LoggableUnit.hpp"
+#include "Units/IUnit.hpp"
+#include "Map/Map.hpp"
+#include "Map/LoggableMap.hpp"
+#include "Units/BuilderTemplates/DefaultUnitsBuilders.hpp"
+#include "Units/UnitTypes.hpp"
+
 
 
 int main(int argc, char **argv)
 {
     using namespace sw;
+    using namespace sw::mngr;
+    using namespace sw::map;
+    using namespace sw::units;
     
     
     if (argc != 2) {
@@ -39,54 +38,40 @@ int main(int argc, char **argv)
     if (!file) {
     	throw std::runtime_error("Error: File not found - " + std::string(argv[1]));
     }
-    
-    // Code for example...
-    
-    std::cout << "Commands:\n";
+
+    GameManager gm;
     io::CommandParser parser;
     parser.add<io::CreateMap>(
-    	[](auto command)
+    	[&gm](auto command)
     	{
-    		printDebug(std::cout, command);
+            gm.create_map<LoggableMap<units::IUnit>, LoggableGameSystem>(command.height, command.width);
     	}).add<io::SpawnWarrior>(
-    	[](auto command)
+    	[&gm](auto command)
     	{
-    		printDebug(std::cout, command);
+            UnitDescription ud1{command.unitId, static_cast<hp_type>(command.hp)};
+            Point coord{static_cast<Point::coord_type>(command.x), static_cast<Point::coord_type>(command.y)};
+            WarriorDescription descr{command.strength, 1};
+            gm.SpawnUnit<LoggableUnit>(descr, ud1, coord);
     	}).add<io::SpawnArcher>(
-    	[](auto command)
+    	[&gm](auto command)
     	{
-    		printDebug(std::cout, command);
+            UnitDescription ud1{command.unitId, static_cast<hp_type>(command.hp)};
+            Point coord{static_cast<Point::coord_type>(command.x), static_cast<Point::coord_type>(command.y)};
+            ArcherDescription descr{command.strength, 1, command.range, command.agility};
+            gm.SpawnUnit<LoggableUnit>(descr, ud1, coord);
     	}).add<io::March>(
-    	[](auto command)
+    	[&gm](auto command)
     	{
-    		printDebug(std::cout, command);
+            Point coord{static_cast<Point::coord_type>(command.targetX), static_cast<Point::coord_type>(command.targetY)};
+            gm.SetMarchForUnit(command.unitId, coord);
     	}).add<io::Wait>(
-    	[](auto command)
+    	[&gm](auto command)
     	{
-    		printDebug(std::cout, command);
+            gm.WaitGameTicks(command.ticks);
+    		//printDebug(std::cout, command);
     	});
     
     parser.parse(file);
-    
-    std::cout << "\n\nEvents:\n";
-    
-    EventLog eventLog;
-    eventLog.listen<io::MapCreated>([](auto& event){ printDebug(std::cout, event); });
-    eventLog.listen<io::UnitSpawned>([](auto& event){ printDebug(std::cout, event); });
-    eventLog.listen<io::MarchStarted>([](auto& event){ printDebug(std::cout, event); });
-    eventLog.listen<io::UnitMoved>([](auto& event){ printDebug(std::cout, event); });
-    eventLog.listen<io::MarchEnded>([](auto& event){ printDebug(std::cout, event); });
-    eventLog.listen<io::UnitAttacked>([](auto& event){ printDebug(std::cout, event); });
-    eventLog.listen<io::UnitDied>([](auto& event){ printDebug(std::cout, event); });
-    
-    eventLog.log(io::MapCreated{ 10, 10 });
-    eventLog.log(io::UnitSpawned{ 1, "Archer", 5, 3 });
-    eventLog.log(io::UnitSpawned{ 2, "Warrior", 5, 3 });
-    eventLog.log(io::MarchStarted{ 1, 5, 3, 7, 9 });
-    eventLog.log(io::UnitMoved{ 1, 6, 4 });
-    eventLog.log(io::UnitAttacked{ 1, 2, 5, 0 });
-    eventLog.log(io::MarchEnded{ 1, 7, 9 });
-    eventLog.log(io::UnitDied{ 1 });
     
     return 0;
 }

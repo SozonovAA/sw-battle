@@ -61,7 +61,6 @@ TEST(map, testGetUnitsAround)
     map.addUnit(2, 3, unit1);
     map.addUnit(3, 4, unit2);
     
-    std::cout << map;
     {
         const auto &res = map.getUnitsAround(3, 3, 1);
         EXPECT_EQ(res.size(), 2);

@@ -13,7 +13,11 @@ using namespace map;
 GameSystem::GameSystem(std::shared_ptr<map_type> map, const GameManager& gameManager) :
     _map(map),
     _gameManager(gameManager)
-    {};
+    {
+        if (_map == nullptr)
+            throw std::runtime_error("Undefined map!");
+        
+    };
 
 
 bool GameSystem::execute(const cmd::IUnitCommand &cmd)
@@ -85,7 +89,8 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
         }
         case cmd::CmdType::UNDEF:
             throw std::runtime_error("Undefined command type!");
-    }
+
+}
     return res;
 }
 

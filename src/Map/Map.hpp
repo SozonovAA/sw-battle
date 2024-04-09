@@ -2,12 +2,10 @@
 
 #include <iomanip>
 #include <cmath>
-#include <ostream>
 #include "IMap.hpp"
 
 namespace sw::map {
 
-// Класс для хранения карты
 template<class EntityT>
 class Map : public IMap<EntityT>
 {
@@ -113,41 +111,11 @@ public:
         }
         return units;
     }
-    
-    
-    friend std::ostream &operator<<(std::ostream &os, const Map &map)
-    {
-        os << "---------------" << std::endl;
-        os << " #  ";
-        for (int j = 0; j < map._cols; ++j)
-            os << j << std::setw(10);
-        
-        os << std::endl;
-        for (int i = 0; i < map._rows; ++i)
-        {
-            os << std::setw(4) << i;
-            for (int j = 0; j < map._cols; ++j)
-            {
-                if (const auto entity = map._grid[j][i])
-                {
-                    os << "|" << *entity << "|";
-                } else
-                {
-                    os << "|________|";
-                    //os << "." << std::setw(7);
-                }
-            }
-            os << std::endl;
-        }
-        os << "---------------" << std::endl;
-        return os;
-    }
-private:
+protected:
     const unsigned _rows;
     const unsigned _cols;
     
     grid_type _grid;
 };
-    
     
 } // sw::map 

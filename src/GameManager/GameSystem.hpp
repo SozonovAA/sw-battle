@@ -22,10 +22,12 @@ public:
     GameSystem(std::shared_ptr<map_type> map, const GameManager& gameManager);
     bool execute(const cmd::IUnitCommand &cmd) override;
 
+    friend class GameManager;
 protected:
     const GameManager& _gameManager;
-    const std::shared_ptr<map_type> _map;
+    std::shared_ptr<map_type> _map;
     units_storage_type _units;
 };
+
     
 } // namespace sw::mngr

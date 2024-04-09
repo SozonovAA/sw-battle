@@ -47,7 +47,7 @@ class LoggableUnit : public Unit
             static_cast<uint32_t>(_coord._x), 
             static_cast<uint32_t>(_coord._y), 
             static_cast<uint32_t>(_march_coord.value()._x), 
-            static_cast<uint32_t>(_march_coord.value()._x)}
+            static_cast<uint32_t>(_march_coord.value()._y)}
         );
     }
 

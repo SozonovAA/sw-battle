@@ -6,6 +6,7 @@
 #include "../../src/Units/LoggableUnit.hpp"
 #include "../../src/Units/IUnit.hpp"
 #include "../../src/Map/Map.hpp"
+#include "../../src/Map/LoggableMap.hpp"
 #include "../../src/Units/BuilderTemplates/DefaultUnitsBuilders.hpp"
 
 namespace sw::mngr::test {
@@ -16,9 +17,8 @@ using namespace units::templates;
 
 TEST(game, spawnTest)
 {
-    std::shared_ptr<Map<units::IUnit>> map = std::make_shared<Map<IUnit>>(10, 10);
-    GameManager gm(map);
-    auto gameSystem = gm.CreateGameSystem<LoggableGameSystem>();
+    GameManager gm;
+    auto map = gm.create_map<LoggableMap<units::IUnit>, LoggableGameSystem>(10, 10);
 
     UnitDescription ud0{0, 10, 2};
     UnitDescription ud1{1, 10};
@@ -44,8 +44,6 @@ TEST(game, spawnTest)
         std::cout << *map;
     }
 
-
-    //gm.SetMarchForUnit(unit0->get_id(), {0, 9});
     gm.SetMarchForUnit(unit0->get_id(), {0, 0});
 
     for(int i = 0; i < 10; ++i)

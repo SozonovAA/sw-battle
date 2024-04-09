@@ -12,13 +12,13 @@
 #include <stdexcept>
 namespace sw::mngr {
 using SpawnCommand =
-        mngr::cmd::UnitCommand<mngr::cmd::SpawnDescription>;
+        cmd::UnitCommand<cmd::SpawnDescription>;
 
 using namespace units::templates;
 
 SpawnCommand GenerateSpawnCommand(std::shared_ptr<units::IUnit> unit, const map::Point& coord)
 {
-    mngr::cmd::SpawnDescription spDescr {
+    cmd::SpawnDescription spDescr {
             unit,
             coord
     };
@@ -79,7 +79,6 @@ void GameManager::WaitOneGameTick()
         _commandsQueue.pop();
     }
 
-
     auto afterTurnCommandQueue = CheckUnitsState();
     while (!afterTurnCommandQueue.empty()) {
         if(const auto& front = afterTurnCommandQueue.front(); _gameSystem->execute(*front.second))
@@ -87,6 +86,14 @@ void GameManager::WaitOneGameTick()
             _unitsStorage.erase(front.first);
         }
         afterTurnCommandQueue.pop();
+    }
+}
+
+void GameManager::WaitGameTicks(unsigned int n)
+{    
+    for(unsigned int i = 0; i < n; ++i)
+    {
+        WaitOneGameTick();
     }
 }
 
