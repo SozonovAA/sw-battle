@@ -11,6 +11,7 @@
 #include "../Units/IUnit.hpp"
 #include "IGameSystem.hpp"
 #include "../Units/UnitBuilder.hpp"
+#include "../Units/BuilderTemplates/DefaultUnitsBuilders.hpp"
 #include "../Units/Unit.hpp"
 #include "../Units/UnitTypes.hpp"
 #include "../Map/Coords.hpp"
@@ -32,8 +33,25 @@ public:
         return _gameSystem = std::make_shared<GameSystemT>(_map, *this);
     }
     
-    std::shared_ptr<const units::IUnit> SpawnUnit(const units::WarriorDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord);
-    std::shared_ptr<const units::IUnit> SpawnUnit(const units::ArcherDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord);
+    template<class UnitType>
+    std::shared_ptr<const units::IUnit> SpawnUnit(const units::WarriorDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord)
+    {
+        units::templates::WarriorBuilder<UnitType> builder (descr, _map);
+        auto unit = builder.create_unit(uDescr);
+        SpawnProcess(unit, coord);
+        return unit;
+    }
+    
+    template<class UnitType>
+    std::shared_ptr<const units::IUnit> SpawnUnit(const units::ArcherDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord)
+    {
+        units::templates::ArcherBuilder<UnitType> builder (descr, _map);
+        auto unit = builder.create_unit(uDescr);
+        
+        SpawnProcess(unit, coord);
+        return unit;
+
+    }
 
     unit_type GetUnitById(const units::id_type& id) const;
     void SetMarchForUnit(const units::id_type& id, const map::Point& marchAim);

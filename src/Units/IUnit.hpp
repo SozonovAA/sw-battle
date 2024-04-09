@@ -34,7 +34,7 @@ public:
     virtual void set_unit_position(const map::Point &pos) = 0;
     virtual map::Point get_unit_position() const = 0;
     virtual void set_march_position(const map::Point &aim) = 0;
-    virtual map::Point get_march_position() const = 0;
+    virtual std::optional<map::Point> get_march_position() const = 0;
     [[nodiscard]] virtual std::unique_ptr<IUnit> clone() const = 0;
     [[nodiscard]] virtual UnitClass get_class() const = 0;
     [[nodiscard]] virtual id_type get_id() const = 0;
@@ -61,6 +61,9 @@ public:
                 break;
             case UnitClass::ARCH:
                 os << "A";
+                break;
+            case UnitClass::MAG:
+                os << "M";
                 break;
         }
         os << "(" << std::setw(2) << unit.get_id() << "," << std::setw(2) << unit.get_hp() << ")" ;

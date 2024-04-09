@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <limits>
+#include <optional>
 
 #include "UnitBuilder.hpp"
 #include "UnitTypes.hpp"
@@ -23,7 +25,7 @@ public:
     void set_unit_position(const map::Point &pos) override;
     map::Point get_unit_position() const override;
     void set_march_position(const map::Point &aim) override;
-    map::Point get_march_position() const override;
+    std::optional<map::Point> get_march_position() const override;
 
     [[nodiscard]] std::unique_ptr<IUnit> clone() const override;
     [[nodiscard]] UnitClass get_class() const override;
@@ -42,7 +44,7 @@ protected:
     UnitState _state = UnitState::ALIVE;
     
     map::Point _coord;
-    map::Point _march_coord;
+    std::optional<map::Point> _march_coord;
     params_storage_type _params;
     action_type _march_method;
     actions_storage_type _priority_actions_storage;

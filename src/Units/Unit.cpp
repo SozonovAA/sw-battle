@@ -19,7 +19,10 @@ std::shared_ptr<mngr::cmd::IUnitCommand> Unit::process()
         if (auto ptr = it.second(std::make_shared<Unit>(*this)))
             return ptr;
     }
-    if ((_coord != _march_coord) && _march_method) {
+    if(_coord == _march_coord)
+        _march_coord.reset();
+
+    if (_march_coord.has_value() && (_coord != _march_coord) && _march_method) {
         return _march_method(std::make_shared<Unit>(*this));
     }
     return std::make_shared<mngr::cmd::UnitCommand<mngr::cmd::SkipDescription>>(_id, mngr::cmd::SkipDescription{});
@@ -38,7 +41,7 @@ void Unit::set_march_position(const map::Point &aim)
 {
     _march_coord = aim;
 }
-map::Point Unit::get_march_position() const
+std::optional<map::Point> Unit::get_march_position() const
 {
     return _march_coord;
 }

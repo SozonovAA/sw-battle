@@ -2,7 +2,6 @@
 // Created by User on 4/6/24.
 //
 
-#include "../Units/BuilderTemplates/DefaultUnitsBuilders.hpp"
 #include "GameManager.hpp"
 #include "../Map/Coords.hpp"
 #include "Command/CmdDescriptions.hpp"
@@ -38,20 +37,6 @@ void GameManager::SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Po
     }
     else 
         throw std::runtime_error{"The error of the spawn unit!"};
-}
-
-std::shared_ptr<const units::IUnit> GameManager::SpawnUnit(const units::WarriorDescription& descr, const units::UnitDescription& uDescr, const map::Point& coord)
-{
-    auto unit = WarriorBuilder(descr, _map).create_unit(uDescr);
-    SpawnProcess(unit, coord);
-    return unit;
-}
-
-std::shared_ptr<const units::IUnit> GameManager::SpawnUnit(const units::ArcherDescription& descr, const units::UnitDescription& uDescr,  const map::Point& coord)
-{
-    auto unit = ArcherBuilder(descr, _map).create_unit(uDescr);
-    SpawnProcess(unit, coord);
-    return unit;
 }
 
 GameManager::unit_type GameManager::GetUnitById(const units::id_type& id) const

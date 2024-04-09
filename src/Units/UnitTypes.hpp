@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+#include <unordered_map>
 namespace sw::units {
 
 using param_type = unsigned;
@@ -9,7 +11,15 @@ enum class UnitClass
 {
     UNDEF = 0,
     WAR,
-    ARCH
+    ARCH,
+    MAG
+};
+
+const static std::unordered_map<UnitClass, std::string> UnitTypeLogString
+{
+    {UnitClass::WAR, "Warrior"},
+    {UnitClass::ARCH, "Archer"},
+    {UnitClass::MAG, "Mage"}
 };
 
 struct UnitDescription
@@ -29,6 +39,13 @@ struct ArcherDescription : WarriorDescription
 {
     param_type agility;
     param_type rRange;
+};
+
+
+struct MagDescription 
+{
+    param_type mana;
+    param_type castRange;
 };
 
 

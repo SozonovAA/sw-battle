@@ -13,23 +13,25 @@
 namespace sw::units::templates {
 
 using namespace mngr::cmd;
-class WarriorBuilder : public UnitBuilder<UnitClass::WAR, Unit>
+
+template<class UnitType = Unit>
+class WarriorBuilder : public UnitBuilder<UnitClass::WAR, UnitType>
 {
     public:
-    using type = UnitBuilder<UnitClass::WAR, Unit>;
+    using type = UnitBuilder<UnitClass::WAR, UnitType>;
     WarriorBuilder(const WarriorDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map)
     {
-        add_param("strength", descr.strength);
-        add_param("mRange", descr.mRange);
+        this->add_param("strength", descr.strength);
+        this->add_param("mRange", descr.mRange);
 
-        set_march_method(
+        this->set_march_method(
             [](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<IUnitCommand>
             {
                 return DefaultMarchMethod(uRef);
             }
         );
 
-        add_action_by_priority(
+        this->add_action_by_priority(
             0,
             [map](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<IUnitCommand>
             {
@@ -39,30 +41,31 @@ class WarriorBuilder : public UnitBuilder<UnitClass::WAR, Unit>
     }
 };
 
-class ArcherBuilder : public UnitBuilder<UnitClass::ARCH, Unit>
+template<class UnitType = Unit>
+class ArcherBuilder : public UnitBuilder<UnitClass::ARCH, UnitType>
 {
     public:
-    using type = UnitBuilder<UnitClass::ARCH, Unit>;
+    using type = UnitBuilder<UnitClass::ARCH, UnitType>;
     ArcherBuilder(const ArcherDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map)
     {
-        add_param("strength", descr.strength);
-        add_param("agility", descr.agility);
-        add_param("mRange", descr.mRange);
-        add_param("rRange", descr.rRange);
-        set_march_method(
+        this->add_param("strength", descr.strength);
+        this->add_param("agility", descr.agility);
+        this->add_param("mRange", descr.mRange);
+        this->add_param("rRange", descr.rRange);
+        this->set_march_method(
             [](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
                 return DefaultMarchMethod(uRef);
             }
         );
-        add_action_by_priority(
+        this->add_action_by_priority(
             0,
             [map](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
                 return RangeAtcFunction(uRef, map);
             }
         );
-        add_action_by_priority(
+        this->add_action_by_priority(
             1,
             [map](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {

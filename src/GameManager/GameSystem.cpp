@@ -1,5 +1,6 @@
 #include "GameSystem.hpp"
 #include "Command/CmdDescriptions.hpp"
+#include "CoreFunctions.hpp"
 #include <any>
 #include <iostream>
 #include <memory>
@@ -8,20 +9,6 @@ namespace sw::mngr {
 using namespace units;
 using namespace cmd;
 using namespace map;
-
-bool UpdateUnitPosition(std::shared_ptr<IUnit> unit, MoveDescription expect, std::shared_ptr<IMap<IUnit>> map)
-{
-    bool res = false;
-    auto uPos1 = unit->get_unit_position();
-    auto newUPos1 = uPos1 + Point{expect.delta_x, expect.delta_y};
-    if(!map->moveUnit(uPos1._x, uPos1._y, newUPos1._x, newUPos1._y))
-    {
-        unit->set_unit_position( newUPos1 );
-        res = true;
-    }
-
-    return res;
-}
 
 GameSystem::GameSystem(std::shared_ptr<map_type> map, const GameManager& gameManager) :
     _map(map),
@@ -37,13 +24,10 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
     {
         case cmd::CmdType::SKIP:
         {
-            std::cout << "SKIP" << std::endl;
-            //todo:func
             break;
         }
         case cmd::CmdType::SPAWN:
         {
-            std::cout << "SPAWN" << std::endl;
             const auto descr = commandRes.get_description<cmd::CmdType::SPAWN>();
             try {
                 const auto unitPtr = std::any_cast<std::shared_ptr<IUnit>>(descr.unit);
@@ -60,7 +44,6 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
         }
         case cmd::CmdType::DEAD:
         {
-            std::cout << "DEAD" << std::endl;
             const auto descr = commandRes.get_description<cmd::CmdType::DEAD>();
             
             if(auto unit = _gameManager.GetUnitById(commandRes._id))
@@ -74,7 +57,6 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
 
         case cmd::CmdType::MOVE:
         {
-            std::cout << "MOVE" << std::endl;
             const auto descr = commandRes.get_description<cmd::CmdType::MOVE>();
             if(auto unit = _gameManager.GetUnitById(commandRes._id))
                 res = UpdateUnitPosition(unit, descr, _map);
@@ -83,7 +65,6 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
         }
         case cmd::CmdType::M_ATCK:
         {
-            std::cout << "M_ATCK" << std::endl;
             const auto descr = commandRes.get_description<cmd::CmdType::M_ATCK>();
             if(auto unit = _gameManager.GetUnitById(descr.unit_id))
             {
@@ -94,7 +75,6 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
         }
         case cmd::CmdType::R_ATCK:
         {
-            std::cout << "R_ATCK" << std::endl;
             const auto descr = commandRes.get_description<cmd::CmdType::R_ATCK>();
                 if(auto unit = _gameManager.GetUnitById(descr.unit_id))
             {
@@ -105,11 +85,8 @@ bool GameSystem::execute(const cmd::IUnitCommand &cmd)
         }
         case cmd::CmdType::UNDEF:
             throw std::runtime_error("Undefined command type!");
-
-break;
-}
-
+    }
     return res;
 }
-    
+
 } //namespace sw::mngr

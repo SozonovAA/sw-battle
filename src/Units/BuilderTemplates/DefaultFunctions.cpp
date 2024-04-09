@@ -10,7 +10,11 @@ std::shared_ptr<IUnitCommand> DefaultMarchMethod(std::shared_ptr<IUnit> uRef)
     map::Point res;
     const unsigned stepCount = uRef->get_step_count();
     const auto currPos = uRef->get_unit_position();
-    const auto marchPos = uRef->get_march_position();
+    const auto marchOpt = uRef->get_march_position();
+    if(!marchOpt.has_value()) 
+        return {};
+    
+    const auto marchPos = marchOpt.value();
     const auto deltaPos = marchPos - currPos;
 
     if (std::abs(deltaPos._x) >= stepCount) {
