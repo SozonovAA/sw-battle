@@ -21,42 +21,37 @@ TEST(map, check_radiusTest)
     EXPECT_EQ(checkRadius(0, 0, 3, 4, 3), false);
 }
 
-// Тест для метода addUnit: добавление юнита в свободную клетку
 TEST(map, testAddUnitToEmptyCell)
 {
     Map<units::IUnit> map(5, 5);
-    EXPECT_EQ(map.addUnit(2, 3, ub.createUnit({0, 0})), 0); // Ожидаем успешное добавление
+    EXPECT_EQ(map.addUnit(2, 3, ub.createUnit({0, 0})), 0); 
 }
 
-// Тест для метода addUnit: добавление юнита в занятую клетку
 TEST(map, testAddUnitToOccupiedCell)
 {
     Map<units::IUnit> map(5, 5);
     
     map.addUnit(2, 3, ub.createUnit({0, 0}));
-    EXPECT_EQ(map.addUnit(2, 3, ub.createUnit({0, 0})), -2); // Ожидаем код ошибки -2 (клетка уже занята)
+    EXPECT_EQ(map.addUnit(2, 3, ub.createUnit({0, 0})), -2); 
 }
 
-// Тест для метода getUnit: получение юнита из занятой клетки
 TEST(map, testGetUnitFromOccupiedCell)
 {
     Map<units::IUnit> map(5, 5);
     std::shared_ptr<units::IUnit> unit = ub.createUnit({0, 0});
     map.addUnit(2, 3, unit);
     std::shared_ptr<units::IUnit> retrievedUnit = map.getUnit(2, 3);
-    EXPECT_EQ(retrievedUnit, unit); // Ожидаем получение того же самого юнита
+    EXPECT_EQ(retrievedUnit, unit); 
 }
 
-// Тест для метода moveUnit: перемещение юнита в свободную клетку
 TEST(map, testMoveUnitToEmptyCell)
 {
     Map<units::IUnit> map(5, 5);
     
     map.addUnit(2, 3, ub.createUnit({0, 0}));
-    EXPECT_EQ(map.moveUnit(2, 3, 3, 4), 0); // Ожидаем успешное перемещение
+    EXPECT_EQ(map.moveUnit(2, 3, 3, 4), 0);
 }
 
-// Тест для метода moveUnit: перемещение юнита в занятую клетку
 TEST(map, testMoveUnitToOccupiedCell)
 {
     Map<units::IUnit> map(5, 5);
@@ -64,10 +59,9 @@ TEST(map, testMoveUnitToOccupiedCell)
     std::shared_ptr<units::IUnit> unit2 = ub.createUnit({0, 0});
     map.addUnit(2, 3, unit1);
     map.addUnit(3, 4, unit2);
-    EXPECT_EQ(map.moveUnit(2, 3, 3, 4), -3); // Ожидаем код ошибки -3 (клетка уже занята)
+    EXPECT_EQ(map.moveUnit(2, 3, 3, 4), -3);
 }
 
-// Тест для метода getUnitsAround: получение объектов в радиусе от указанных координат
 TEST(map, testGetUnitsAround)
 {
     Map<units::IUnit> map(5, 5);
@@ -116,10 +110,7 @@ TEST(map, testGetUnitsAround)
 
 TEST(map, testGetUnitsAroundFromTo)
 {
-    // Создание карты размером 5x5
     LoggableMap<units::IUnit> map(5, 5);
-
-    // Создание и добавление юнитов на карту
     const std::shared_ptr<units::IUnit> unit1 = ub.createUnit({1, 0});
     const std::shared_ptr<units::IUnit> unit2 = ub.createUnit({2, 0});
     const std::shared_ptr<units::IUnit> unit3 = ub.createUnit({3, 0});
@@ -164,14 +155,12 @@ TEST(map, testGetUnitsAroundFromTo)
         EXPECT_EQ(res.size(), 1);
         EXPECT_TRUE(std::find(res.begin(), res.end(), unit3) != res.end());
     }
-    // Тесты для разных радиусов вокруг точек
     {
         const auto &res = map.getUnitsAround(2, 1, 1, 2);
         EXPECT_EQ(res.size(), 2);
         EXPECT_TRUE(std::find(res.begin(), res.end(), unit1) != res.end());
         EXPECT_TRUE(std::find(res.begin(), res.end(), unit3) != res.end());
     }
-    // Тесты для разных радиусов вокруг точек
     {
         const auto &res = map.getUnitsAround(2, 1, 3, 1000);
         EXPECT_EQ(res.size(), 1);

@@ -8,7 +8,6 @@
 #include "../IO/System/EventLog.hpp"
 
 namespace sw::map {
-// Класс для хранения карты
 template<class EntityT>
 class LoggableMap : public Map<EntityT>
 {
