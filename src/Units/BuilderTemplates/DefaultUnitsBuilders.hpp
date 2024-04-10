@@ -19,7 +19,7 @@ class WarriorBuilder : public UnitBuilder<UnitClass::WAR, UnitType>
 {
     public:
     using type = UnitBuilder<UnitClass::WAR, UnitType>;
-    WarriorBuilder(const WarriorDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map)
+    WarriorBuilder(const WarriorDescription& descr, const std::shared_ptr<map::IMap<IUnit>>& map)
     {
         this->addParam("strength", descr.strength);
         this->addParam("mRange", descr.mRange);
@@ -42,7 +42,7 @@ class WarriorBuilder : public UnitBuilder<UnitClass::WAR, UnitType>
 };
 
 template<class UnitType>
-static std::shared_ptr<units::IUnit> createDefaultUnit(const units::WarriorDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map, const units::UnitDescription& uDescr)
+static std::shared_ptr<units::IUnit> createDefaultUnit(const units::WarriorDescription& descr, const std::shared_ptr<map::IMap<IUnit>>& map, const units::UnitDescription& uDescr)
 {
     units::templates::WarriorBuilder<UnitType> builder (descr, map);
     return builder.createUnit(uDescr);
@@ -53,7 +53,7 @@ class ArcherBuilder : public UnitBuilder<UnitClass::ARCH, UnitType>
 {
     public:
     using type = UnitBuilder<UnitClass::ARCH, UnitType>;
-    ArcherBuilder(const ArcherDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map)
+    ArcherBuilder(const ArcherDescription& descr, const std::shared_ptr<map::IMap<IUnit>>& map)
     {
         this->addParam("strength", descr.strength);
         this->addParam("agility", descr.agility);
@@ -83,7 +83,7 @@ class ArcherBuilder : public UnitBuilder<UnitClass::ARCH, UnitType>
 };
 
 template<class UnitType>
-static std::shared_ptr<units::IUnit> createDefaultUnit(const units::ArcherDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map, const units::UnitDescription& uDescr)
+static std::shared_ptr<units::IUnit> createDefaultUnit(const units::ArcherDescription& descr, const std::shared_ptr<map::IMap<IUnit>>& map, const units::UnitDescription& uDescr)
 {
     units::templates::ArcherBuilder<UnitType> builder (descr, map);
     return builder.createUnit(uDescr);

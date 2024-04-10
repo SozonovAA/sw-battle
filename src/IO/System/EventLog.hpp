@@ -15,7 +15,7 @@ namespace sw
 		template <class TEvent>
 		void listen(std::function<void(TEvent&)> handler)
 		{
-			auto [it, inserted] = _handlers.emplace(
+			auto [it, inserted] = _handlers.try_emplace(
 				std::type_index(typeid(TEvent)),
 				[handler = std::move(handler)](void* event)
 				{

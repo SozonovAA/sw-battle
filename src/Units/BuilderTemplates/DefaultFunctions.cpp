@@ -15,7 +15,7 @@ std::shared_ptr<IUnitCommand> defaultMarchMethod(std::shared_ptr<IUnit> uRef)
     if(!marchOpt.has_value()) 
         return {};
     
-    const auto marchPos = marchOpt.value();
+    const auto marchPos = *marchOpt;
     const auto [deltaX, deltaY] = marchPos - currPos;
 
     if (std::abs(deltaX) >= stepCount) {
@@ -48,7 +48,7 @@ std::shared_ptr<IUnit> getAtckTarget(const std::vector<std::shared_ptr<IUnit>>& 
     return target;
 }
 
-std::shared_ptr<UnitCommand<MeleeAttackDescription>> meleeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map)
+std::shared_ptr<UnitCommand<MeleeAttackDescription>> meleeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>>& map)
 {
     const auto [x, y] = uRef->getUnitPosition();
     if( const auto &unitsAround = map->getUnitsAround(
@@ -65,7 +65,7 @@ std::shared_ptr<UnitCommand<MeleeAttackDescription>> meleeAtcFunction(std::share
     return {};
 }
 
-std::shared_ptr<UnitCommand<RangeAttackDescription>> rangeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map)
+std::shared_ptr<UnitCommand<RangeAttackDescription>> rangeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>>& map)
 {
     const auto [x, y] = uRef->getUnitPosition();
      if(const auto &unitsAround = map->getUnitsAround(

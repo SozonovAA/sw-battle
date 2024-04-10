@@ -51,10 +51,8 @@ bool deadHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 bool moveHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 {
     bool res{false};
-
-    const auto descr = commandRes.getDescription<cmd::CmdType::MOVE>();
     if(auto unit = gs.getGameManager().getUnitById(commandRes._id))
-        res = updateUnitPosition(unit, descr, gs.getMap());
+        res = updateUnitPosition(unit, commandRes.getDescription<cmd::CmdType::MOVE>(), gs.getMap());
 
     return res;
 }
