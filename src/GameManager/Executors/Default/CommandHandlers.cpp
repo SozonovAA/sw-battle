@@ -1,6 +1,7 @@
 
 #include "GameExecutor.hpp"
 #include "../CoreFunctions.hpp"
+#include <stdexcept>
 
 namespace sw::mngr {
 namespace {
@@ -16,11 +17,16 @@ bool spawnHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
     const auto descr = commandRes.getDescription<cmd::CmdType::SPAWN>();
     try {
         const auto unitPtr = std::any_cast<std::shared_ptr<units::IUnit>>(descr.unit);
-        if(unitPtr && gs.getMap()->addUnit(descr.coord._x, descr.coord._y, unitPtr) == 0)
+        if(const auto addRes = gs.getMap()->addUnit(descr.coord._x, descr.coord._y, unitPtr); 
+            unitPtr && addRes == 0)
         {
             unitPtr->setUnitPosition({descr.coord._x, descr.coord._y});
             res = true;
-        }
+        } 
+        else if(addRes == -1)
+            throw std::runtime_error{"Uncorrect coordinate!"};
+        else if(addRes == -2)
+            throw std::runtime_error{"This field is already occupied!"};
     } catch (std::bad_any_cast& ex)
     {
         res = false;
