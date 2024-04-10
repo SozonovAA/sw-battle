@@ -19,13 +19,13 @@ std::shared_ptr<IUnitCommand> defaultMarchMethod(std::shared_ptr<IUnit> uRef)
     const auto [deltaX, deltaY] = marchPos - currPos;
 
     if (std::abs(deltaX) >= stepCount) {
-        res._x = stepCount * (std::signbit(deltaX) ? -1 : 1);
+        res._x = stepCount * (deltaX < 0 ? -1 : 1);
     }
     else {
         res._x = deltaX;
     }
     if (std::abs(deltaY) >= stepCount) {
-        res._y = stepCount * (std::signbit(deltaY) ? -1 : 1);
+        res._y = stepCount * (deltaY < 0 ? -1 : 1);
     }
     else {
         res._y = deltaY;
