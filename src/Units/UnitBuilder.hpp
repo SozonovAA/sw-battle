@@ -13,7 +13,7 @@ class UnitBuilder
 {
 public:
     static_assert(std::is_base_of<IUnit, UnitT>::value, "UnitT must be derived from IUnit!");
-    
+    const static UnitClass unit_class = Type;
     using unit_type = UnitT;
     using id_type = IUnit::id_type;
     using hp_type = IUnit::hp_type;
