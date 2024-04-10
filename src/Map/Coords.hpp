@@ -8,24 +8,24 @@ namespace sw::map {
 struct Point
 {
     using coord_type = int;
-    coord_type _x;
-    coord_type _y;
+    coord_type x;
+    coord_type y;
     
-    Point() : _x(0), _y(0) {}
-    Point(coord_type x_val, coord_type y_val) : _x(x_val), _y(y_val) {}
+    Point() : x(0), y(0) {}
+    Point(coord_type x_val, coord_type y_val) : x(x_val), y(y_val) {}
 
     Point operator+(const Point& other) const
     {
-        return Point(_x + other._x, _y + other._y);
+        return Point(x + other.x, y + other.y);
     }
 
     Point operator-(const Point& other) const
     {
-        return Point(_x - other._x, _y - other._y);
+        return Point(x - other.x, y - other.y);
     }
 
     bool operator==(const Point& other) const {
-        return _x == other._x && _y == other._y;
+        return x == other.x && y == other.y;
     }
 
     bool operator!=(const Point& other) const {
@@ -34,7 +34,7 @@ struct Point
     
     friend std::ostream &operator<<(std::ostream &os, const Point &point)
     {
-        os << "Point: (" << point._x << ", " << point._y << ")";
+        os << "Point: (" << point.x << ", " << point.y << ")";
         return os;
     }
 };

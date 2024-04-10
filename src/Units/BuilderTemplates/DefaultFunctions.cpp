@@ -19,18 +19,18 @@ std::shared_ptr<IUnitCommand> defaultMarchMethod(std::shared_ptr<IUnit> uRef)
     const auto [deltaX, deltaY] = marchPos - currPos;
 
     if (std::abs(deltaX) >= stepCount) {
-        res._x = stepCount * (deltaX < 0 ? -1 : 1);
+        res.x = stepCount * (deltaX < 0 ? -1 : 1);
     }
     else {
-        res._x = deltaX;
+        res.x = deltaX;
     }
     if (std::abs(deltaY) >= stepCount) {
-        res._y = stepCount * (deltaY < 0 ? -1 : 1);
+        res.y = stepCount * (deltaY < 0 ? -1 : 1);
     }
     else {
-        res._y = deltaY;
+        res.y = deltaY;
     }
-    return std::make_shared<UnitCommand<MoveDescription>>(uRef->getId(), MoveDescription{res._x, res._y});
+    return std::make_shared<UnitCommand<MoveDescription>>(uRef->getId(), MoveDescription{res.x, res.y});
 }
 
 std::shared_ptr<IUnit> getAtckTarget(const std::vector<std::shared_ptr<IUnit>>& enemies)

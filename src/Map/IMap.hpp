@@ -20,6 +20,8 @@ public:
     getUnitsAround(coord_type x, coord_type y, coord_type radius) const = 0;
     virtual std::vector<entity_storage_type>
     getUnitsAround(coord_type x, coord_type y, coord_type fromRadius, coord_type toRadius) const = 0;
+    virtual bool isCoordinateCorrect(const coord_type& x, const coord_type& y) const noexcept =0;
+
     
     virtual ~IMap() = default;
 };

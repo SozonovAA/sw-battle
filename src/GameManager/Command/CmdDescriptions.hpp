@@ -33,11 +33,11 @@ using DeadDescription = Description<CmdType::DEAD> ;
 
 template <>
 struct Description<CmdType::MOVE> {
-    const delta_type delta_x;
-    const delta_type delta_y;
+    const delta_type deltax;
+    const delta_type deltay;
     const static CmdType cmd_type = CmdType::MOVE;
     bool operator==(const Description<CmdType::MOVE>& rhs) const {
-    return delta_x == rhs.delta_x && delta_y == rhs.delta_y;
+    return deltax == rhs.deltax && deltay == rhs.deltay;
     }
 };
 using MoveDescription = Description<CmdType::MOVE> ;
@@ -95,7 +95,7 @@ struct CmdDescription {
           case CmdType::MOVE: {
               os << "MOVE";
               const MoveDescription& move_descr = cmd.getDescription<CmdType::MOVE>();
-              os << ", Move: (" << move_descr.delta_x << ", " << move_descr.delta_y << ")";
+              os << ", Move: (" << move_descr.deltax << ", " << move_descr.deltay << ")";
               break;
           }
           case CmdType::M_ATCK: {

@@ -12,8 +12,8 @@ using namespace units::templates;
 void updateUnitPosition(std::shared_ptr<IUnit> unit0, MoveDescription expect, std::shared_ptr<IMap<IUnit>> map)
 {
     auto uPos1 = unit0->getUnitPosition();
-    auto newUPos1 = uPos1 + Point{expect.delta_x, expect.delta_y};
-    map->moveUnit(uPos1._x, uPos1._y, newUPos1._x, newUPos1._y);
+    auto newUPos1 = uPos1 + Point{expect.deltax, expect.deltay};
+    map->moveUnit(uPos1.x, uPos1.y, newUPos1.x, newUPos1.y);
     unit0->setUnitPosition( newUPos1 );
 }
 
@@ -28,7 +28,7 @@ TEST(unit, skipTest)
         WarriorDescription{str, mRange}, map).createUnit(ud0);
 
     Point _0 = {2, 3};
-    map->addUnit(_0._x, _0._y, unit0);
+    map->addUnit(_0.x, _0.y, unit0);
     unit0->setUnitPosition(_0);
     unit0->setMarchPosition(_0);
 
@@ -52,7 +52,7 @@ TEST(unit, marchTest)
 
     Point _0 = {2, 3};
     Point _1 = {10, 10};
-    map->addUnit(_0._x, _0._y, unit0);
+    map->addUnit(_0.x, _0.y, unit0);
     unit0->setUnitPosition(_0);
     unit0->setMarchPosition(_1);
 
@@ -79,11 +79,11 @@ TEST(unit, meleeAtckTest)
         WarriorDescription{str, mRange}, map).createUnit(ud1);
 
     Point _0 = {2, 3};
-    map->addUnit(_0._x, _0._y, unit0);
+    map->addUnit(_0.x, _0.y, unit0);
     unit0->setUnitPosition(_0);
 
     _0 = {3, 3};
-    map->addUnit(_0._x, _0._y, unit1);
+    map->addUnit(_0.x, _0.y, unit1);
     unit1->setUnitPosition(_0);
 
     //simple melee atack test
@@ -99,7 +99,7 @@ TEST(unit, meleeAtckTest)
         WarriorDescription{str, mRange}, map).createUnit(ud2);
 
     _0 = {2, 2};
-    map->addUnit(_0._x, _0._y, unit2);
+    map->addUnit(_0.x, _0.y, unit2);
     unit2->setUnitPosition(_0);
 
     com = unit0->process();
@@ -115,7 +115,7 @@ TEST(unit, meleeAtckTest)
         WarriorDescription{str, mRange}, map).createUnit(ud2);
 
     _0 = {1, 3};
-    map->addUnit(_0._x, _0._y, unit2);
+    map->addUnit(_0.x, _0.y, unit2);
     unit2->setUnitPosition(_0);
 
     com = unit0->process();
@@ -147,8 +147,8 @@ TEST(unit, marchAndAttackTest)
 
     Point _0 = {2, 3};
     Point _1 = {4, 5};
-    map->addUnit(_0._x, _0._y, unit0);
-    map->addUnit(_1._x, _1._y, unit1);
+    map->addUnit(_0.x, _0.y, unit0);
+    map->addUnit(_1.x, _1.y, unit1);
 
     unit0->setUnitPosition(_0);
     unit1->setUnitPosition(_1);
@@ -181,7 +181,7 @@ TEST(unit, marchAndAttackTest)
     EXPECT_EQ(cmdDescr2.getDescription<CmdType::M_ATCK>(), expect2);
 
     auto pos = unit1->getUnitPosition();
-    auto deletedUnit = map->deleteUnit(pos._x, pos._y);
+    auto deletedUnit = map->deleteUnit(pos.x, pos.y);
     EXPECT_EQ(deletedUnit, unit1);
 
     //move after kill
@@ -224,8 +224,8 @@ TEST(unit, archerFullTest)
 
         Point _0 = {0, 0};
         Point _1 = {1, 1};
-        map->addUnit(_0._x, _0._y, unit0);
-        map->addUnit(_1._x, _1._y, unit1);
+        map->addUnit(_0.x, _0.y, unit0);
+        map->addUnit(_1.x, _1.y, unit1);
 
         unit0->setUnitPosition(_0);
         unit1->setUnitPosition(_1);
@@ -249,8 +249,8 @@ TEST(unit, archerFullTest)
 
         Point _0 = {0, 0};
         Point _1 = {2, 2};
-        map->addUnit(_0._x, _0._y, unit0);
-        map->addUnit(_1._x, _1._y, unit1);
+        map->addUnit(_0.x, _0.y, unit0);
+        map->addUnit(_1.x, _1.y, unit1);
 
         unit0->setUnitPosition(_0);
         unit1->setUnitPosition(_1);
@@ -274,8 +274,8 @@ TEST(unit, archerFullTest)
 
         Point _0 = {0, 0};
         Point _1 = {4, 4};
-        map->addUnit(_0._x, _0._y, unit0);
-        map->addUnit(_1._x, _1._y, unit1);
+        map->addUnit(_0.x, _0.y, unit0);
+        map->addUnit(_1.x, _1.y, unit1);
 
         unit0->setUnitPosition(_0);
         unit1->setUnitPosition(_1);
@@ -297,8 +297,8 @@ TEST(unit, archerFullTest)
 
         Point _0 = {0, 0};
         Point _1 = {5, 5};
-        map->addUnit(_0._x, _0._y, unit0);
-        map->addUnit(_1._x, _1._y, unit1);
+        map->addUnit(_0.x, _0.y, unit0);
+        map->addUnit(_1.x, _1.y, unit1);
 
         unit0->setUnitPosition(_0);
         unit1->setUnitPosition(_1);

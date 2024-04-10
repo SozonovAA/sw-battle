@@ -1,6 +1,7 @@
 
 #include <IO/System/CommandParser.hpp>
 #include <IO/System/PrintDebug.hpp>
+#include <exception>
 #include <iostream>
 #include <fstream>
 #include <IO/Commands/CreateMap.hpp>
@@ -41,47 +42,51 @@ int main(int argc, char **argv)
     	throw std::runtime_error("Error: File not found - " + std::string(argv[1]));
     }
 
-    GameManager gm;
-    io::CommandParser parser;
-    std::shared_ptr<LoggableMap<units::IUnit>> map;
-    parser.add<io::CreateMap>(
-    	[&gm, &map](auto command) mutable
-    	{
-            map = gm.createMap<LoggableMap<units::IUnit>, LoggableGameExecutor>(command.height, command.width);
-    	}).add<io::SpawnWarrior>(
-    	[&gm](auto command)
-    	{
-            UnitDescription ud1{command.unitId, static_cast<hp_type>(command.hp)};
-            Point coord{static_cast<Point::coord_type>(command.x), static_cast<Point::coord_type>(command.y)};
-            WarriorDescription descr{command.strength, 1};
-            gm.spawnUnit<LoggableUnit>(descr, ud1, coord);
-    	}).add<io::SpawnArcher>(
-    	[&gm](auto command)
-    	{
-            UnitDescription ud1{command.unitId, static_cast<hp_type>(command.hp)};
-            Point coord{static_cast<Point::coord_type>(command.x), static_cast<Point::coord_type>(command.y)};
-            ArcherDescription descr{command.strength, 1, command.range, command.agility};
-            gm.spawnUnit<LoggableUnit>(descr, ud1, coord);
-    	}).add<io::March>(
-    	[&gm](auto command)
-    	{
-            Point coord{static_cast<Point::coord_type>(command.targetX), static_cast<Point::coord_type>(command.targetY)};
-            gm.setMarchForUnit(command.unitId, coord);
-    	}).add<io::Wait>(
-    	[&gm](auto command)
-    	{
-            gm.waitGameTicks(command.ticks);
-    	}).add<io::WaitPrintMap>(
-    	[&gm, &map](auto command)
-    	{   
-            for(unsigned int i = 0; i < command.ticks; ++i)
+    try {
+        GameManager gm;
+        io::CommandParser parser;
+        std::shared_ptr<LoggableMap<units::IUnit>> map;
+        parser.add<io::CreateMap>(
+            [&gm, &map](auto command) mutable
             {
-                gm.waitOneGameTick();
-                std::cout << *map;
-            }
-    	});;
-    
-    parser.parse(file);
-    
+                map = gm.createMap<LoggableMap<units::IUnit>, LoggableGameExecutor>(command.height, command.width);
+            }).add<io::SpawnWarrior>(
+            [&gm](auto command)
+            {
+                UnitDescription ud1{command.unitId, static_cast<hp_type>(command.hp)};
+                Point coord{static_cast<Point::coord_type>(command.x), static_cast<Point::coord_type>(command.y)};
+                WarriorDescription descr{command.strength, 1};
+                gm.spawnUnit<LoggableUnit>(descr, ud1, coord);
+            }).add<io::SpawnArcher>(
+            [&gm](auto command)
+            {
+                UnitDescription ud1{command.unitId, static_cast<hp_type>(command.hp)};
+                Point coord{static_cast<Point::coord_type>(command.x), static_cast<Point::coord_type>(command.y)};
+                ArcherDescription descr{command.strength, 1, command.range, command.agility};
+                gm.spawnUnit<LoggableUnit>(descr, ud1, coord);
+            }).add<io::March>(
+            [&gm](auto command)
+            {
+                Point coord{static_cast<Point::coord_type>(command.targetX), static_cast<Point::coord_type>(command.targetY)};
+                gm.setMarchForUnit(command.unitId, coord);
+            }).add<io::Wait>(
+            [&gm](auto command)
+            {
+                gm.waitGameTicks(command.ticks);
+            }).add<io::WaitPrintMap>(
+            [&gm, &map](auto command)
+            {   
+                for(unsigned int i = 0; i < command.ticks; ++i)
+                {
+                    gm.waitOneGameTick();
+                    std::cout << *map;
+                }
+            });
+        
+        parser.parse(file);
+    } catch (std::exception & ex) {
+        std::cerr << ex.what();
+        return 1;
+    }   
     return 0;
 }
