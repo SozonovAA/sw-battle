@@ -14,5 +14,6 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC src/)
 
 if(BUILD_TESTS)
+    enable_testing()
     add_subdirectory(tests)
 endif()
