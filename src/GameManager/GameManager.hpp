@@ -6,11 +6,10 @@
 #include <limits>
 #include <memory>
 #include <queue>
-#include <sys/_types/_id_t.h>
 #include <utility>
 #include "../Map/IMap.hpp"
 #include "../Units/IUnit.hpp"
-#include "IGameSystem.hpp"
+#include "IGameExecutor.hpp"
 #include "../Units/UnitBuilder.hpp"
 #include "../Units/BuilderTemplates/DefaultUnitsBuilders.hpp"
 #include "../Units/Unit.hpp"
@@ -26,15 +25,14 @@ public:
     using unit_type = map_type::element_type::entity_storage_type;
     using units_storage_type = std::map<units::IUnit::id_type, unit_type>;
 
-    template<class MapT, class GameSystemT>
+    template<class MapT, class GameExecutorT>
     std::shared_ptr<MapT> create_map(const map::Point::coord_type& x, const map::Point::coord_type& y)
     {
         auto res =std::make_shared<MapT>(x, y);
         _map = res;
-        _gameSystem = std::make_shared<GameSystemT>(_map, *this);
+        _gameSystem = std::make_shared<GameExecutorT>(_map, *this);
         return res;
     }
-
     
     template<class UnitType, class DescriptorType>
     std::shared_ptr<units::IUnit> SpawnUnit(const DescriptorType& descr, const units::UnitDescription& uDescr, const map::Point& coord)
@@ -48,14 +46,21 @@ public:
     void SetMarchForUnit(const units::id_type& id, const map::Point& marchAim);
     void WaitOneGameTick();
     void WaitGameTicks(unsigned int n);
+
+
 private:
     std::queue<std::pair<units::id_type, std::shared_ptr<cmd::IUnitCommand>>> CheckUnitsState();
     void SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord);
 private:
     units_storage_type _unitsStorage;
     map_type _map;
-    std::shared_ptr<IGameSystem> _gameSystem;
+    std::shared_ptr<IGameExecutor> _gameSystem;
     std::queue<std::shared_ptr<cmd::IUnitCommand>> _commandsQueue;
+};
+class IExecutor
+{
+    public:
+    bool execute();
 
 };
 

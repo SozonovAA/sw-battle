@@ -18,11 +18,7 @@ using namespace units::templates;
 
 SpawnCommand GenerateSpawnCommand(std::shared_ptr<units::IUnit> unit, const map::Point& coord)
 {
-    cmd::SpawnDescription spDescr {
-            unit,
-            coord
-    };
-    return { unit->get_id(), spDescr };
+    return { unit->get_id(), cmd::SpawnDescription { unit, coord } };
 }
 
 void GameManager::SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord)

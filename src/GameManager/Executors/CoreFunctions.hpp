@@ -1,8 +1,6 @@
 #pragma once
-#include "IGameSystem.hpp"
-#include "GameManager.hpp"
-#include "../Map/IMap.hpp"
-#include "../Units/IUnit.hpp"
+#include "../../Map/IMap.hpp"
+#include "../../Units/IUnit.hpp"
 
 namespace sw::mngr {
 using namespace units;

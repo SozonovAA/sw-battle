@@ -1,6 +1,9 @@
 #pragma once
 #include <any>
+#include <functional>
 #include <ostream>
+#include <sys/stat.h>
+#include <unordered_map>
 #include "../../Units/UnitTypes.hpp"
 #include "../../Map/Coords.hpp"
 
@@ -12,8 +15,9 @@ using hp_type = units::hp_type;
 using id_type = units::id_type;
 
 template <CmdType Type>
-struct Description{};
-
+struct Description{
+    const static CmdType cmd_type = Type;
+};
 using SkipDescription = Description<CmdType::SKIP> ;
 
 
@@ -21,7 +25,7 @@ template <>
 struct Description<CmdType::SPAWN> {
     const std::any unit;
     const map::Point coord;
-
+    const static CmdType cmd_type = CmdType::SPAWN;
 };
 using SpawnDescription = Description<CmdType::SPAWN>;
 
@@ -29,35 +33,39 @@ using DeadDescription = Description<CmdType::DEAD> ;
 
 template <>
 struct Description<CmdType::MOVE> {
-  const delta_type delta_x;
-  const delta_type delta_y;
-  bool operator==(const Description<CmdType::MOVE>& rhs) const {
+    const delta_type delta_x;
+    const delta_type delta_y;
+    const static CmdType cmd_type = CmdType::MOVE;
+    bool operator==(const Description<CmdType::MOVE>& rhs) const {
     return delta_x == rhs.delta_x && delta_y == rhs.delta_y;
-  }
+    }
 };
 using MoveDescription = Description<CmdType::MOVE> ;
 
 template <>
 struct Description<CmdType::M_ATCK> {
-  const id_type unit_id;
-  const hp_type damage;
-  bool operator==(const Description<CmdType::M_ATCK>& rhs) const {
-      return unit_id == rhs.unit_id && damage == rhs.damage;
-  }
+    const id_type unit_id;
+    const hp_type damage;
+    const static CmdType cmd_type = CmdType::M_ATCK;
+    bool operator==(const Description<CmdType::M_ATCK>& rhs) const {
+        return unit_id == rhs.unit_id && damage == rhs.damage;
+    }
 };
 using MeleeAttackDescription = Description<CmdType::M_ATCK> ;
 
 template <>
 struct Description<CmdType::R_ATCK> {
-  const id_type unit_id;
-  const param_type range;
-  const hp_type damage;
+    const id_type unit_id;
+    const param_type range;
+    const hp_type damage;
+    const static CmdType cmd_type = CmdType::R_ATCK;
 
-  bool operator==(const Description<CmdType::R_ATCK>& rhs) const {
-      return unit_id == rhs.unit_id && range == rhs.range && damage == rhs.damage;
-  }
+    bool operator==(const Description<CmdType::R_ATCK>& rhs) const {
+        return unit_id == rhs.unit_id && range == rhs.range && damage == rhs.damage;
+    }
 };
 using RangeAttackDescription = Description<CmdType::R_ATCK>;
+
 
 struct CmdDescription {
     template<CmdType T>

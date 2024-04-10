@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 #include <memory>
 #include "../../src/GameManager/GameManager.hpp"
-#include "../../src/GameManager/GameSystem.hpp"
-#include "../../src/GameManager/LoggableGameSystem.hpp"
+#include "../../src/GameManager/Executors/Loggable/LoggableGameExecutor.hpp"
 #include "../../src/Units/LoggableUnit.hpp"
 #include "../../src/Units/IUnit.hpp"
 #include "../../src/Map/Map.hpp"
@@ -18,7 +17,7 @@ using namespace units::templates;
 TEST(game, spawnTest)
 {
     GameManager gm;
-    auto map = gm.create_map<LoggableMap<units::IUnit>, LoggableGameSystem>(10, 10);
+    auto map = gm.create_map<LoggableMap<units::IUnit>, LoggableGameExecutor>(10, 10);
 
     UnitDescription ud0{0, 10, 2};
     UnitDescription ud1{1, 10};

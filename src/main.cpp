@@ -12,8 +12,8 @@
 #include <memory>
 
 #include "GameManager/GameManager.hpp"
-#include "GameManager/GameSystem.hpp"
-#include "GameManager/LoggableGameSystem.hpp"
+#include "GameManager/Executors/Default/GameExecutor.hpp"
+#include "GameManager/Executors/Loggable/LoggableGameExecutor.hpp"
 #include "Map/Coords.hpp"
 #include "Units/LoggableUnit.hpp"
 #include "Units/IUnit.hpp"
@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     parser.add<io::CreateMap>(
     	[&gm, &map](auto command) mutable
     	{
-            map = gm.create_map<LoggableMap<units::IUnit>, LoggableGameSystem>(command.height, command.width);
+            map = gm.create_map<LoggableMap<units::IUnit>, LoggableGameExecutor>(command.height, command.width);
     	}).add<io::SpawnWarrior>(
     	[&gm](auto command)
     	{
