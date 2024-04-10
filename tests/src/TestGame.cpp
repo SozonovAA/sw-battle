@@ -40,7 +40,6 @@ TEST(game, spawnTest)
     for(int i = 0; i < 10; ++i)
     {
         gm.waitOneGameTick();
-        std::cout << *map;
     }
 
     gm.setMarchForUnit(unit0->getId(), {0, 0});
@@ -48,7 +47,6 @@ TEST(game, spawnTest)
     for(int i = 0; i < 10; ++i)
     {
         gm.waitOneGameTick();
-        std::cout << *map;
     }
 }
 }

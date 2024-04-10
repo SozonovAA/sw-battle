@@ -315,7 +315,6 @@ TEST(unit, archerFullTest)
 
             updateUnitPosition(unit0, cmdDescr.getDescription<CmdType::MOVE>(), map);
         }
-        std::cout << *map;
         
         com = unit0->process();
         {
@@ -327,7 +326,6 @@ TEST(unit, archerFullTest)
 
             updateUnitPosition(unit0, cmdDescr.getDescription<CmdType::MOVE>(), map);
         }
-        std::cout << *map;
 
         com = unit0->process();
         {
@@ -349,7 +347,6 @@ TEST(unit, archerFullTest)
 
             updateUnitPosition(unit1, cmdDescr.getDescription<CmdType::MOVE>(), map);
         }
-        std::cout << *map;
 
         com = unit0->process();
         {
@@ -359,7 +356,7 @@ TEST(unit, archerFullTest)
             EXPECT_NO_THROW(auto d = cmdDescr.getDescription<CmdType::R_ATCK>());
             EXPECT_EQ(cmdDescr.getDescription<CmdType::R_ATCK>(), expect);
         }        
-        std::cout << *map;
+
         com = unit1->process();
         {
             auto cmdDescr = com->execute();
@@ -370,7 +367,7 @@ TEST(unit, archerFullTest)
 
             updateUnitPosition(unit1, cmdDescr.getDescription<CmdType::MOVE>(), map);
         }        
-        std::cout << *map;
+
         com = unit1->process();
         {
             auto cmdDescr = com->execute();
