@@ -7,6 +7,7 @@
 #include <string>
 #include <map>
 #include <unordered_map>
+#include <optional>
 
 #include "UnitTypes.hpp"
 #include "../Map/Coords.hpp"
@@ -28,7 +29,7 @@ public:
     using params_storage_type = std::unordered_map<std::string, sw::mngr::cmd::param_type>;
     using actions_storage_type = std::map<unsigned, action_type, std::less<unsigned>>;
     using id_type = sw::mngr::cmd::id_type;
-    using hp_type = hp_type;
+    using hp_type = sw::units::hp_type;
     
     virtual std::shared_ptr<mngr::cmd::IUnitCommand> process() = 0;
     virtual void setUnitPosition(const map::Point &pos) = 0;
