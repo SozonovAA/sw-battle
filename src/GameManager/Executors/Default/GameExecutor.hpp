@@ -37,7 +37,6 @@ public:
         return _map;
     }
 
-
 protected:
     const GameManager& _gameManager;
     std::shared_ptr<map_type> _map;

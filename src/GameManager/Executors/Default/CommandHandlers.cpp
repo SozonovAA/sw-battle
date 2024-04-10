@@ -5,7 +5,6 @@
 namespace sw::mngr {
 namespace {
 
-
 bool skip_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 {
     return true;

@@ -23,10 +23,10 @@ SpawnCommand GenerateSpawnCommand(std::shared_ptr<units::IUnit> unit, const map:
 
 void GameManager::SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord)
 {
-    if(!_gameSystem)
+    if(!_gameExecutor)
         throw std::runtime_error{"The GameSystem is not created!"};
 
-    if(_gameSystem->execute(GenerateSpawnCommand(unit, coord)))
+    if(_gameExecutor->execute(GenerateSpawnCommand(unit, coord)))
     {
         if(!_unitsStorage.emplace(unit->get_id(), unit).second)
             throw std::runtime_error{"A unit with the same ID has already spawned!"};
@@ -71,13 +71,13 @@ void GameManager::WaitOneGameTick()
         _commandsQueue.push(unitPair.second->process());
 
     while (!_commandsQueue.empty()) {
-        _gameSystem->execute(*_commandsQueue.front());
+        _gameExecutor->execute(*_commandsQueue.front());
         _commandsQueue.pop();
     }
 
     auto afterTurnCommandQueue = CheckUnitsState();
     while (!afterTurnCommandQueue.empty()) {
-        if(const auto& front = afterTurnCommandQueue.front(); _gameSystem->execute(*front.second))
+        if(const auto& front = afterTurnCommandQueue.front(); _gameExecutor->execute(*front.second))
         {
             _unitsStorage.erase(front.first);
         }

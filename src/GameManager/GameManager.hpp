@@ -30,7 +30,7 @@ public:
     {
         auto res =std::make_shared<MapT>(x, y);
         _map = res;
-        _gameSystem = std::make_shared<GameExecutorT>(_map, *this);
+        _gameExecutor = std::make_shared<GameExecutorT>(_map, *this);
         return res;
     }
     
@@ -41,20 +41,17 @@ public:
         SpawnProcess(unit, coord);
         return unit;
     }
-
     unit_type GetUnitById(const units::id_type& id) const;
     void SetMarchForUnit(const units::id_type& id, const map::Point& marchAim);
     void WaitOneGameTick();
     void WaitGameTicks(unsigned int n);
-
-
 private:
     std::queue<std::pair<units::id_type, std::shared_ptr<cmd::IUnitCommand>>> CheckUnitsState();
     void SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord);
 private:
     units_storage_type _unitsStorage;
     map_type _map;
-    std::shared_ptr<IGameExecutor> _gameSystem;
+    std::shared_ptr<IGameExecutor> _gameExecutor;
     std::queue<std::shared_ptr<cmd::IUnitCommand>> _commandsQueue;
 };
 class IExecutor
