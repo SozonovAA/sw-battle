@@ -21,31 +21,31 @@ class WarriorBuilder : public UnitBuilder<UnitClass::WAR, UnitType>
     using type = UnitBuilder<UnitClass::WAR, UnitType>;
     WarriorBuilder(const WarriorDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map)
     {
-        this->add_param("strength", descr.strength);
-        this->add_param("mRange", descr.mRange);
+        this->addParam("strength", descr.strength);
+        this->addParam("mRange", descr.mRange);
 
-        this->set_march_method(
+        this->setMarchMethod(
             [](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<IUnitCommand>
             {
-                return DefaultMarchMethod(uRef);
+                return defaultMarchMethod(uRef);
             }
         );
 
-        this->add_action_by_priority(
+        this->addActionByPriority(
             0,
             [map](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<IUnitCommand>
             {
-                return MeleeAtcFunction(uRef, map);
+                return meleeAtcFunction(uRef, map);
             }
         );
     }
 };
 
 template<class UnitType>
-static std::shared_ptr<units::IUnit> CreateDefaultUnit(const units::WarriorDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map, const units::UnitDescription& uDescr)
+static std::shared_ptr<units::IUnit> createDefaultUnit(const units::WarriorDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map, const units::UnitDescription& uDescr)
 {
     units::templates::WarriorBuilder<UnitType> builder (descr, map);
-    return builder.create_unit(uDescr);
+    return builder.createUnit(uDescr);
 }
 
 template<class UnitType = Unit>
@@ -55,37 +55,37 @@ class ArcherBuilder : public UnitBuilder<UnitClass::ARCH, UnitType>
     using type = UnitBuilder<UnitClass::ARCH, UnitType>;
     ArcherBuilder(const ArcherDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map)
     {
-        this->add_param("strength", descr.strength);
-        this->add_param("agility", descr.agility);
-        this->add_param("mRange", descr.mRange);
-        this->add_param("rRange", descr.rRange);
-        this->set_march_method(
+        this->addParam("strength", descr.strength);
+        this->addParam("agility", descr.agility);
+        this->addParam("mRange", descr.mRange);
+        this->addParam("rRange", descr.rRange);
+        this->setMarchMethod(
             [](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
-                return DefaultMarchMethod(uRef);
+                return defaultMarchMethod(uRef);
             }
         );
-        this->add_action_by_priority(
+        this->addActionByPriority(
             0,
             [map](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
-                return RangeAtcFunction(uRef, map);
+                return rangeAtcFunction(uRef, map);
             }
         );
-        this->add_action_by_priority(
+        this->addActionByPriority(
             1,
             [map](std::shared_ptr<IUnit> uRef) -> std::shared_ptr<mngr::cmd::IUnitCommand>
             {
-                return MeleeAtcFunction(uRef, map);
+                return meleeAtcFunction(uRef, map);
             }
         );
     }
 };
 
 template<class UnitType>
-static std::shared_ptr<units::IUnit> CreateDefaultUnit(const units::ArcherDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map, const units::UnitDescription& uDescr)
+static std::shared_ptr<units::IUnit> createDefaultUnit(const units::ArcherDescription& descr, const std::shared_ptr<map::IMap<IUnit>> map, const units::UnitDescription& uDescr)
 {
     units::templates::ArcherBuilder<UnitType> builder (descr, map);
-    return builder.create_unit(uDescr);
+    return builder.createUnit(uDescr);
 }
 } // namespace sw::units::templates 

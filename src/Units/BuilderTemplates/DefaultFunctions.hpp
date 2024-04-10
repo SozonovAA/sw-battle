@@ -7,10 +7,9 @@
 #include <memory>
 namespace sw::units::templates {
 
-std::shared_ptr<mngr::cmd::IUnitCommand> DefaultMarchMethod(std::shared_ptr<IUnit> uRef);
-//todo: tests
-std::shared_ptr<IUnit> GetAtckTarget(const std::vector<std::shared_ptr<IUnit>>& enemies);
-std::shared_ptr<mngr::cmd::UnitCommand<mngr::cmd::MeleeAttackDescription>> MeleeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map);
-std::shared_ptr<mngr::cmd::UnitCommand<mngr::cmd::RangeAttackDescription>> RangeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map);
+std::shared_ptr<mngr::cmd::IUnitCommand> defaultMarchMethod(std::shared_ptr<IUnit> uRef);
+std::shared_ptr<IUnit> getAtckTarget(const std::vector<std::shared_ptr<IUnit>>& enemies);
+std::shared_ptr<mngr::cmd::UnitCommand<mngr::cmd::MeleeAttackDescription>> meleeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map);
+std::shared_ptr<mngr::cmd::UnitCommand<mngr::cmd::RangeAttackDescription>> rangeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map);
 
 }

@@ -23,14 +23,13 @@ public:
     
     virtual ~IMap() = default;
 };
-static double get_distance(const coord_type& x, const coord_type& y, const coord_type& targetX, const coord_type& targetY)
+static double getDistance(const coord_type& x, const coord_type& y, const coord_type& targetX, const coord_type& targetY)
 {
     return std::sqrt(std::pow(static_cast<int>(targetX - x), 2) + std::pow(static_cast<int>(targetY - y), 2));
 
 }
-
-static bool check_radius(const coord_type& x, const coord_type& y, const coord_type& targetX, const coord_type& targetY, const coord_type& R)
+static bool checkRadius(const coord_type& x, const coord_type& y, const coord_type& targetX, const coord_type& targetY, const coord_type& R)
 {
-    return std::round(get_distance(x, y, targetX, targetY)) <= R;
+    return std::round(getDistance(x, y, targetX, targetY)) <= R;
 }
 }

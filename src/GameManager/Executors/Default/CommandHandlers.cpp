@@ -5,20 +5,20 @@
 namespace sw::mngr {
 namespace {
 
-bool skip_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
+bool skipHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 {
     return true;
 }
 
-bool spawn_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
+bool spawnHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 {
     bool res{false};
-    const auto descr = commandRes.get_description<cmd::CmdType::SPAWN>();
+    const auto descr = commandRes.getDescription<cmd::CmdType::SPAWN>();
     try {
         const auto unitPtr = std::any_cast<std::shared_ptr<units::IUnit>>(descr.unit);
-        if(unitPtr && gs.get_map()->addUnit(descr.coord._x, descr.coord._y, unitPtr) == 0)
+        if(unitPtr && gs.getMap()->addUnit(descr.coord._x, descr.coord._y, unitPtr) == 0)
         {
-            unitPtr->set_unit_position({descr.coord._x, descr.coord._y});
+            unitPtr->setUnitPosition({descr.coord._x, descr.coord._y});
             res = true;
         }
     } catch (std::bad_any_cast& ex)
@@ -28,58 +28,58 @@ bool spawn_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
     return res;
 }
 
-bool dead_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
+bool deadHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 {
     bool res{false};
-    const auto descr = commandRes.get_description<cmd::CmdType::DEAD>();
+    const auto descr = commandRes.getDescription<cmd::CmdType::DEAD>();
     
-    if(auto unit = gs.get_game_manager().GetUnitById(commandRes._id))
+    if(auto unit = gs.getGameManager().getUnitById(commandRes._id))
     {
-        const auto [x, y] = unit->get_unit_position();
-        gs.get_map()->deleteUnit(x, y);
+        const auto [x, y] = unit->getUnitPosition();
+        gs.getMap()->deleteUnit(x, y);
         res = true;
     }
     return res;
 }
 
-bool move_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
+bool moveHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 {
     bool res{false};
 
-    const auto descr = commandRes.get_description<cmd::CmdType::MOVE>();
-    if(auto unit = gs.get_game_manager().GetUnitById(commandRes._id))
-        res = UpdateUnitPosition(unit, descr, gs.get_map());
+    const auto descr = commandRes.getDescription<cmd::CmdType::MOVE>();
+    if(auto unit = gs.getGameManager().getUnitById(commandRes._id))
+        res = updateUnitPosition(unit, descr, gs.getMap());
 
     return res;
 }
 
-bool mAtck_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
+bool mAtckHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 {
     bool res{false};
 
-    const auto descr = commandRes.get_description<cmd::CmdType::M_ATCK>();
-    if(auto unit = gs.get_game_manager().GetUnitById(descr.unit_id))
+    const auto descr = commandRes.getDescription<cmd::CmdType::M_ATCK>();
+    if(auto unit = gs.getGameManager().getUnitById(descr.unit_id))
     {
-        unit->change_hp(-descr.damage);
+        unit->changeHp(-descr.damage);
         res = true;
     }
     return res;
 }
 
-bool rAtck_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
+bool rAtckHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 {
     bool res{false};
 
-    const auto descr = commandRes.get_description<cmd::CmdType::R_ATCK>();
-        if(auto unit = gs.get_game_manager().GetUnitById(descr.unit_id))
+    const auto descr = commandRes.getDescription<cmd::CmdType::R_ATCK>();
+        if(auto unit = gs.getGameManager().getUnitById(descr.unit_id))
     {
-        unit->change_hp(-descr.damage);
+        unit->changeHp(-descr.damage);
         res = true;
     }
     return res;
 }
 
-bool undef_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
+bool undefHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 {
     throw std::runtime_error("Undefined command type!");
 }
@@ -87,13 +87,13 @@ bool undef_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 
 GameExecutor::handler_type GameExecutor::game_handlers = 
 {
-    {cmd::CmdType::SPAWN, spawn_handler},
-    {cmd::CmdType::SKIP, skip_handler},
-    {cmd::CmdType::DEAD, dead_handler},
-    {cmd::CmdType::MOVE, move_handler},
-    {cmd::CmdType::M_ATCK, mAtck_handler},
-    {cmd::CmdType::R_ATCK, rAtck_handler},
-    {cmd::CmdType::UNDEF, undef_handler}
+    {cmd::CmdType::SPAWN, spawnHandler},
+    {cmd::CmdType::SKIP, skipHandler},
+    {cmd::CmdType::DEAD, deadHandler},
+    {cmd::CmdType::MOVE, moveHandler},
+    {cmd::CmdType::M_ATCK, mAtckHandler},
+    {cmd::CmdType::R_ATCK, rAtckHandler},
+    {cmd::CmdType::UNDEF, undefHandler}
 };
 
 }

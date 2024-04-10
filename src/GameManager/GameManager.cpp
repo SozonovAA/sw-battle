@@ -16,26 +16,26 @@ using SpawnCommand =
 
 using namespace units::templates;
 
-SpawnCommand GenerateSpawnCommand(std::shared_ptr<units::IUnit> unit, const map::Point& coord)
+SpawnCommand generateSpawnCommand(std::shared_ptr<units::IUnit> unit, const map::Point& coord)
 {
-    return { unit->get_id(), cmd::SpawnDescription { unit, coord } };
+    return { unit->getId(), cmd::SpawnDescription { unit, coord } };
 }
 
-void GameManager::SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord)
+void GameManager::spawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord)
 {
     if(!_gameExecutor)
         throw std::runtime_error{"The GameSystem is not created!"};
 
-    if(_gameExecutor->execute(GenerateSpawnCommand(unit, coord)))
+    if(_gameExecutor->execute(generateSpawnCommand(unit, coord)))
     {
-        if(!_unitsStorage.emplace(unit->get_id(), unit).second)
+        if(!_unitsStorage.emplace(unit->getId(), unit).second)
             throw std::runtime_error{"A unit with the same ID has already spawned!"};
     }
     else 
         throw std::runtime_error{"The error of the spawn unit!"};
 }
 
-GameManager::unit_type GameManager::GetUnitById(const units::id_type& id) const
+GameManager::unit_type GameManager::getUnitById(const units::id_type& id) const
 {
     unit_type res {};
     if(auto it = _unitsStorage.find(id); it != _unitsStorage.end())
@@ -43,29 +43,29 @@ GameManager::unit_type GameManager::GetUnitById(const units::id_type& id) const
 
     return res;
 }
-void GameManager::SetMarchForUnit(const units::id_type& id, const map::Point& marchAim)
+void GameManager::setMarchForUnit(const units::id_type& id, const map::Point& marchAim)
 {
     if(auto it = _unitsStorage.find(id); it != _unitsStorage.end())
-        it->second->set_march_position(marchAim);
+        it->second->setMarchPosition(marchAim);
     else 
         throw std::runtime_error{"Unknown ID!"};
 }
 
-std::queue<std::pair<units::id_type, std::shared_ptr<cmd::IUnitCommand>>> GameManager::CheckUnitsState()
+std::queue<std::pair<units::id_type, std::shared_ptr<cmd::IUnitCommand>>> GameManager::checkUnitsState()
 {
     std::queue<std::pair<units::id_type, std::shared_ptr<cmd::IUnitCommand>>> res;
     for(const auto& unitPair : _unitsStorage)
     {
-        if(const auto unit = unitPair.second; unit->get_state() == units::UnitState::DEAD)
+        if(const auto unit = unitPair.second; unit->getState() == units::UnitState::DEAD)
             res.push({
             unitPair.first,
-            std::make_shared<UnitCommand<DeadDescription>>(unit->get_id(), DeadDescription{})
+            std::make_shared<UnitCommand<DeadDescription>>(unit->getId(), DeadDescription{})
             });
     }
     return res;
 }
 
-void GameManager::WaitOneGameTick()
+void GameManager::waitOneGameTick()
 {
     for(auto& unitPair : _unitsStorage)
         _commandsQueue.push(unitPair.second->process());
@@ -75,7 +75,7 @@ void GameManager::WaitOneGameTick()
         _commandsQueue.pop();
     }
 
-    auto afterTurnCommandQueue = CheckUnitsState();
+    auto afterTurnCommandQueue = checkUnitsState();
     while (!afterTurnCommandQueue.empty()) {
         if(const auto& front = afterTurnCommandQueue.front(); _gameExecutor->execute(*front.second))
         {
@@ -85,11 +85,11 @@ void GameManager::WaitOneGameTick()
     }
 }
 
-void GameManager::WaitGameTicks(unsigned int n)
+void GameManager::waitGameTicks(unsigned int n)
 {    
     for(unsigned int i = 0; i < n; ++i)
     {
-        WaitOneGameTick();
+        waitOneGameTick();
     }
 }
 

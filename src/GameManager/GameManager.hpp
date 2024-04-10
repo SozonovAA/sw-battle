@@ -26,7 +26,7 @@ public:
     using units_storage_type = std::map<units::IUnit::id_type, unit_type>;
 
     template<class MapT, class GameExecutorT>
-    std::shared_ptr<MapT> create_map(const map::Point::coord_type& x, const map::Point::coord_type& y)
+    std::shared_ptr<MapT> createMap(const map::Point::coord_type& x, const map::Point::coord_type& y)
     {
         auto res =std::make_shared<MapT>(x, y);
         _map = res;
@@ -35,19 +35,19 @@ public:
     }
     
     template<class UnitType, class DescriptorType>
-    std::shared_ptr<units::IUnit> SpawnUnit(const DescriptorType& descr, const units::UnitDescription& uDescr, const map::Point& coord)
+    std::shared_ptr<units::IUnit> spawnUnit(const DescriptorType& descr, const units::UnitDescription& uDescr, const map::Point& coord)
     {
-        auto unit = units::templates::CreateDefaultUnit<UnitType>(descr, _map, uDescr);
-        SpawnProcess(unit, coord);
+        auto unit = units::templates::createDefaultUnit<UnitType>(descr, _map, uDescr);
+        spawnProcess(unit, coord);
         return unit;
     }
-    unit_type GetUnitById(const units::id_type& id) const;
-    void SetMarchForUnit(const units::id_type& id, const map::Point& marchAim);
-    void WaitOneGameTick();
-    void WaitGameTicks(unsigned int n);
+    unit_type getUnitById(const units::id_type& id) const;
+    void setMarchForUnit(const units::id_type& id, const map::Point& marchAim);
+    void waitOneGameTick();
+    void waitGameTicks(unsigned int n);
 private:
-    std::queue<std::pair<units::id_type, std::shared_ptr<cmd::IUnitCommand>>> CheckUnitsState();
-    void SpawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord);
+    std::queue<std::pair<units::id_type, std::shared_ptr<cmd::IUnitCommand>>> checkUnitsState();
+    void spawnProcess(std::shared_ptr<units::IUnit> unit, const map::Point& coord);
 private:
     units_storage_type _unitsStorage;
     map_type _map;

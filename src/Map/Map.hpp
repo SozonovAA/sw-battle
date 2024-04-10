@@ -78,7 +78,7 @@ public:
         {
             for (coord_type j = y_min; j <= y_max; ++j)
             {
-                if (!(x == i && y == j) && _grid[i][j] && check_radius(x, y, i, j, radius))
+                if (!(x == i && y == j) && _grid[i][j] && checkRadius(x, y, i, j, radius))
                     units.push_back(_grid[i][j]);
             }
         }
@@ -106,7 +106,7 @@ public:
                 int distance_y = abs(static_cast<int>(j) - static_cast<int>(y));
                 if (_grid[i][j] && !(x == i && y == j) && 
                     (distance_x >= fromRadius || distance_y >= fromRadius) && 
-                    check_radius(x, y, i, j, toRadius)
+                    checkRadius(x, y, i, j, toRadius)
                 )
                 {
                     units.push_back(_grid[i][j]);

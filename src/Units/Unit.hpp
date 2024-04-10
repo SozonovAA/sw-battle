@@ -22,20 +22,20 @@ public:
     
     //virt methods
     std::shared_ptr<mngr::cmd::IUnitCommand> process() override;
-    void set_unit_position(const map::Point &pos) override;
-    map::Point get_unit_position() const override;
-    void set_march_position(const map::Point &aim) override;
-    std::optional<map::Point> get_march_position() const override;
+    void setUnitPosition(const map::Point &pos) override;
+    map::Point getUnitPosition() const override;
+    void setMarchPosition(const map::Point &aim) override;
+    std::optional<map::Point> getMarchPosition() const override;
 
     [[nodiscard]] std::unique_ptr<IUnit> clone() const override;
-    [[nodiscard]] UnitClass get_class() const override;
-    [[nodiscard]] id_type get_id() const override;
-    [[nodiscard]] UnitState get_state() const override;
-    [[nodiscard]] param_type get_step_count() const override;
-    hp_type get_hp() const override;
-    void change_hp(const hp_type& hp) override;
-    void set_main_params(action_type march_action, params_storage_type params, actions_storage_type actions) override;
-    param_pair_type::second_type get_param_value(const param_pair_type::first_type& name) const override;
+    [[nodiscard]] UnitClass getClass() const override;
+    [[nodiscard]] id_type getId() const override;
+    [[nodiscard]] UnitState getState() const override;
+    [[nodiscard]] param_type getStepCount() const override;
+    hp_type getHp() const override;
+    void changeHp(const hp_type& hp) override;
+    void setMainParams(action_type march_action, params_storage_type params, actions_storage_type actions) override;
+    param_pair_type::second_type getParamValue(const param_pair_type::first_type& name) const override;
 
 
 protected:

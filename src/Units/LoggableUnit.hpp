@@ -13,11 +13,11 @@ class LoggableUnit : public Unit
     public:
     LoggableUnit(UnitClass type, const UnitDescription& ud) : Unit(type, ud)
     {
-        register_events();
+        registerEvents();
     }
     LoggableUnit(UnitClass type, id_type id, hp_type hp, param_type step_count) : Unit(type, id, hp, step_count)
     {
-        register_events();
+        registerEvents();
     }
 
     LoggableUnit(const LoggableUnit &) = default;
@@ -32,18 +32,18 @@ class LoggableUnit : public Unit
         if(_march_coord.has_value() && _coord == _march_coord)
         {
                 _eventLog.log(io::MarchEnded{ 
-                    get_id(), 
+                    getId(), 
                     static_cast<uint32_t>(_coord._x), 
                     static_cast<uint32_t>(_coord._y)})
                 ;
         }
         return Unit::process();
     }
-    void set_march_position(const map::Point &aim) override
+    void setMarchPosition(const map::Point &aim) override
     {
-        Unit::set_march_position(aim);
+        Unit::setMarchPosition(aim);
         _eventLog.log(io::MarchStarted{ 
-            get_id(), 
+            getId(), 
             static_cast<uint32_t>(_coord._x), 
             static_cast<uint32_t>(_coord._y), 
             static_cast<uint32_t>(_march_coord.value()._x), 
@@ -55,7 +55,7 @@ class LoggableUnit : public Unit
 
     EventLog _eventLog;
 
-    void register_events()
+    void registerEvents()
     {
         _eventLog.listen<sw::io::MarchStarted>([](auto& event){ printDebug(std::cout, event); });
         _eventLog.listen<sw::io::MarchEnded>([](auto& event){ printDebug(std::cout, event); });

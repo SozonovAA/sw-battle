@@ -22,24 +22,24 @@ public:
     using params_storage_type = IUnit::params_storage_type;
     using actions_storage_type = IUnit::actions_storage_type;
     
-    std::shared_ptr<IUnit> create_unit(const UnitDescription& ud)
+    std::shared_ptr<IUnit> createUnit(const UnitDescription& ud)
     {
         auto ret = std::make_unique<unit_type>(unit_type(Type, ud));
-        ret->set_main_params(_march_method, _params, _actions);
+        ret->setMainParams(_march_method, _params, _actions);
         return ret;
     };
     
-    bool add_param(const param_pair_type::first_type &name, const param_pair_type::second_type &value)
+    bool addParam(const param_pair_type::first_type &name, const param_pair_type::second_type &value)
     {
         return _params.try_emplace(name, value).second;
     };
     
-    void set_march_method(action_type act)
+    void setMarchMethod(action_type act)
     {
         _march_method = std::move(act);
     };
     
-    bool add_action_by_priority(actions_storage_type::size_type prior, action_type act)
+    bool addActionByPriority(actions_storage_type::size_type prior, action_type act)
     {
         return _actions.try_emplace(prior, act).second;
     };

@@ -47,36 +47,36 @@ int main(int argc, char **argv)
     parser.add<io::CreateMap>(
     	[&gm, &map](auto command) mutable
     	{
-            map = gm.create_map<LoggableMap<units::IUnit>, LoggableGameExecutor>(command.height, command.width);
+            map = gm.createMap<LoggableMap<units::IUnit>, LoggableGameExecutor>(command.height, command.width);
     	}).add<io::SpawnWarrior>(
     	[&gm](auto command)
     	{
             UnitDescription ud1{command.unitId, static_cast<hp_type>(command.hp)};
             Point coord{static_cast<Point::coord_type>(command.x), static_cast<Point::coord_type>(command.y)};
             WarriorDescription descr{command.strength, 1};
-            gm.SpawnUnit<LoggableUnit>(descr, ud1, coord);
+            gm.spawnUnit<LoggableUnit>(descr, ud1, coord);
     	}).add<io::SpawnArcher>(
     	[&gm](auto command)
     	{
             UnitDescription ud1{command.unitId, static_cast<hp_type>(command.hp)};
             Point coord{static_cast<Point::coord_type>(command.x), static_cast<Point::coord_type>(command.y)};
             ArcherDescription descr{command.strength, 1, command.range, command.agility};
-            gm.SpawnUnit<LoggableUnit>(descr, ud1, coord);
+            gm.spawnUnit<LoggableUnit>(descr, ud1, coord);
     	}).add<io::March>(
     	[&gm](auto command)
     	{
             Point coord{static_cast<Point::coord_type>(command.targetX), static_cast<Point::coord_type>(command.targetY)};
-            gm.SetMarchForUnit(command.unitId, coord);
+            gm.setMarchForUnit(command.unitId, coord);
     	}).add<io::Wait>(
     	[&gm](auto command)
     	{
-            gm.WaitGameTicks(command.ticks);
+            gm.waitGameTicks(command.ticks);
     	}).add<io::WaitPrintMap>(
     	[&gm, &map](auto command)
     	{   
             for(unsigned int i = 0; i < command.ticks; ++i)
             {
-                gm.WaitOneGameTick();
+                gm.waitOneGameTick();
                 std::cout << *map;
             }
     	});;

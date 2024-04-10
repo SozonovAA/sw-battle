@@ -76,7 +76,7 @@ struct CmdDescription {
     const std::any _cmd_params;
 
     template <CmdType Type>
-    [[nodiscard]] Description<Type> get_description() const {
+    [[nodiscard]] Description<Type> getDescription() const {
       return std::any_cast<Description<Type>>(_cmd_params);
     }
     
@@ -94,19 +94,19 @@ struct CmdDescription {
               break;
           case CmdType::MOVE: {
               os << "MOVE";
-              const MoveDescription& move_descr = cmd.get_description<CmdType::MOVE>();
+              const MoveDescription& move_descr = cmd.getDescription<CmdType::MOVE>();
               os << ", Move: (" << move_descr.delta_x << ", " << move_descr.delta_y << ")";
               break;
           }
           case CmdType::M_ATCK: {
               os << "MELEE ATTACK";
-              const MeleeAttackDescription& m_atck_descr = cmd.get_description<CmdType::M_ATCK>();
+              const MeleeAttackDescription& m_atck_descr = cmd.getDescription<CmdType::M_ATCK>();
               os << ", Melee Attack: (Unit ID: " << m_atck_descr.unit_id << ", Damage: " << m_atck_descr.damage << ")";
               break;
           }
           case CmdType::R_ATCK: {
               os << "RANGE ATTACK";
-              const RangeAttackDescription& r_atck_descr = cmd.get_description<CmdType::R_ATCK>();
+              const RangeAttackDescription& r_atck_descr = cmd.getDescription<CmdType::R_ATCK>();
               os << ", Range Attack: (Unit ID: " << r_atck_descr.unit_id << ", Range: " << r_atck_descr.range 
                 << ", Damage: " << r_atck_descr.damage << ")";
               break;

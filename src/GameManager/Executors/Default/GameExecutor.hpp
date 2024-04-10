@@ -27,12 +27,12 @@ public:
     GameExecutor(std::shared_ptr<map_type> map, const GameManager& gameManager);
     bool execute(const cmd::IUnitCommand &cmd) override;
 
-    const GameManager& get_game_manager()
+    const GameManager& getGameManager()
     {
         return _gameManager;
     }
 
-    std::shared_ptr<map_type> get_map()
+    std::shared_ptr<map_type> getMap()
     {
         return _map;
     }

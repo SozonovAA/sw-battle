@@ -6,12 +6,12 @@
 
 namespace sw::units::templates {
 using namespace mngr::cmd;
-std::shared_ptr<IUnitCommand> DefaultMarchMethod(std::shared_ptr<IUnit> uRef)
+std::shared_ptr<IUnitCommand> defaultMarchMethod(std::shared_ptr<IUnit> uRef)
 {
     map::Point res;
-    const unsigned stepCount = uRef->get_step_count();
-    const auto currPos = uRef->get_unit_position();
-    const auto marchOpt = uRef->get_march_position();
+    const unsigned stepCount = uRef->getStepCount();
+    const auto currPos = uRef->getUnitPosition();
+    const auto marchOpt = uRef->getMarchPosition();
     if(!marchOpt.has_value()) 
         return {};
     
@@ -30,10 +30,10 @@ std::shared_ptr<IUnitCommand> DefaultMarchMethod(std::shared_ptr<IUnit> uRef)
     else {
         res._y = deltaY;
     }
-    return std::make_shared<UnitCommand<MoveDescription>>(uRef->get_id(), MoveDescription{res._x, res._y});
+    return std::make_shared<UnitCommand<MoveDescription>>(uRef->getId(), MoveDescription{res._x, res._y});
 }
 
-std::shared_ptr<IUnit> GetAtckTarget(const std::vector<std::shared_ptr<IUnit>>& enemies)
+std::shared_ptr<IUnit> getAtckTarget(const std::vector<std::shared_ptr<IUnit>>& enemies)
 {
     if(enemies.empty())
         return {};
@@ -41,54 +41,54 @@ std::shared_ptr<IUnit> GetAtckTarget(const std::vector<std::shared_ptr<IUnit>>& 
     std::shared_ptr<IUnit> target = nullptr;
     for (const auto& enemy : enemies) 
     {
-        if (!target || (enemy->get_hp() < target->get_hp()) || (enemy->get_id() < target->get_id())) 
+        if (!target || (enemy->getHp() < target->getHp()) || (enemy->getId() < target->getId())) 
             target = enemy;
     }
 
     return target;
 }
 
-std::shared_ptr<UnitCommand<MeleeAttackDescription>> MeleeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map)
+std::shared_ptr<UnitCommand<MeleeAttackDescription>> meleeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map)
 {
-    const auto [x, y] = uRef->get_unit_position();
+    const auto [x, y] = uRef->getUnitPosition();
     if( const auto &unitsAround = map->getUnitsAround(
         x,
         y,
-        uRef->get_param_value("mRange")); !unitsAround.empty())
+        uRef->getParamValue("mRange")); !unitsAround.empty())
     {
         MeleeAttackDescription atcDescr {
-                GetAtckTarget(unitsAround)->get_id(),
-                static_cast<hp_type>(uRef->get_param_value("strength"))
+                getAtckTarget(unitsAround)->getId(),
+                static_cast<hp_type>(uRef->getParamValue("strength"))
         };
-        return std::make_shared<UnitCommand<MeleeAttackDescription>>(uRef->get_id(), atcDescr);
+        return std::make_shared<UnitCommand<MeleeAttackDescription>>(uRef->getId(), atcDescr);
     }
     return {};
 }
 
-std::shared_ptr<UnitCommand<RangeAttackDescription>> RangeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map)
+std::shared_ptr<UnitCommand<RangeAttackDescription>> rangeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map)
 {
-    const auto [x, y] = uRef->get_unit_position();
+    const auto [x, y] = uRef->getUnitPosition();
      if(const auto &unitsAround = map->getUnitsAround(
             x,
             y,
             2,
-            uRef->get_param_value("rRange")); !unitsAround.empty())
+            uRef->getParamValue("rRange")); !unitsAround.empty())
         {
             double minDistance = std::numeric_limits<double>().max();
             std::vector<std::shared_ptr<IUnit>> closeUnits;
             for(const auto & unit : unitsAround)
             {
-                const auto [tarX, tarY] = unit->get_unit_position();
-                if(const auto dist = map::get_distance( x, y, tarX, tarY); minDistance >= dist)
+                const auto [tarX, tarY] = unit->getUnitPosition();
+                if(const auto dist = map::getDistance( x, y, tarX, tarY); minDistance >= dist)
                     closeUnits.push_back(unit);
             }
 
             RangeAttackDescription descr {
-                    GetAtckTarget(closeUnits)->get_id(),
-                    uRef->get_param_value("rRange"),
-                    static_cast<hp_type>(uRef->get_param_value("agility"))
+                    getAtckTarget(closeUnits)->getId(),
+                    uRef->getParamValue("rRange"),
+                    static_cast<hp_type>(uRef->getParamValue("agility"))
             };
-            return std::make_shared<UnitCommand<RangeAttackDescription>>(uRef->get_id(), descr);
+            return std::make_shared<UnitCommand<RangeAttackDescription>>(uRef->getId(), descr);
         }
 
     return {};

@@ -17,7 +17,7 @@ using namespace units::templates;
 TEST(game, spawnTest)
 {
     GameManager gm;
-    auto map = gm.create_map<LoggableMap<units::IUnit>, LoggableGameExecutor>(10, 10);
+    auto map = gm.createMap<LoggableMap<units::IUnit>, LoggableGameExecutor>(10, 10);
 
     UnitDescription ud0{0, 10, 2};
     UnitDescription ud1{1, 10};
@@ -30,24 +30,24 @@ TEST(game, spawnTest)
     param_type cRange = 5;
     param_type mana = 1;
     
-    auto unit0 = gm.SpawnUnit<LoggableUnit>(ArcherDescription{str, mRange, agility, rRange}, ud0, {5, 0});
-    auto unit1 = gm.SpawnUnit<LoggableUnit>(WarriorDescription{str, mRange}, ud1, {9, 9});
+    auto unit0 = gm.spawnUnit<LoggableUnit>(ArcherDescription{str, mRange, agility, rRange}, ud0, {5, 0});
+    auto unit1 = gm.spawnUnit<LoggableUnit>(WarriorDescription{str, mRange}, ud1, {9, 9});
 
-    //gm.SetMarchForUnit(unit0->get_id(), {0, 9});
-    gm.SetMarchForUnit(unit1->get_id(), {0, 0});
-    gm.SetMarchForUnit(unit0->get_id(), {0, 0});
+    //gm.SetMarchForUnit(unit0->getId(), {0, 9});
+    gm.setMarchForUnit(unit1->getId(), {0, 0});
+    gm.setMarchForUnit(unit0->getId(), {0, 0});
 
     for(int i = 0; i < 10; ++i)
     {
-        gm.WaitOneGameTick();
+        gm.waitOneGameTick();
         std::cout << *map;
     }
 
-    gm.SetMarchForUnit(unit0->get_id(), {0, 0});
+    gm.setMarchForUnit(unit0->getId(), {0, 0});
 
     for(int i = 0; i < 10; ++i)
     {
-        gm.WaitOneGameTick();
+        gm.waitOneGameTick();
         std::cout << *map;
     }
 }
