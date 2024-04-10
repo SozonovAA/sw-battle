@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 #-------------------------------------------------------------------
 # Определение опций сборки
 #-------------------------------------------------------------------
-option(BUILD_TESTS "Build tests. Google test framework is used for this!" OFF)
+option(BUILD_TESTS "Build tests. Google test framework is used for this!" ON)
 
 file(GLOB_RECURSE SOURCES src/*.cpp src/*.hpp)
 

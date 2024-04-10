@@ -28,7 +28,7 @@ void GameManager::spawnProcess(std::shared_ptr<units::IUnit> unit, const map::Po
 
     if(_gameExecutor->execute(generateSpawnCommand(unit, coord)))
     {
-        if(!_unitsStorage.emplace(unit->getId(), unit).second)
+        if(!_unitsStorage.try_emplace(unit->getId(), unit).second)
             throw std::runtime_error{"A unit with the same ID has already spawned!"};
     }
     else 

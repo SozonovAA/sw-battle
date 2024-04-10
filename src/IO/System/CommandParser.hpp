@@ -16,7 +16,7 @@ namespace sw::io
 		CommandParser& add(std::function<void(TCommandData)> handler)
 		{
 			std::string commandName = TCommandData::Name;
-			auto [it, inserted] = _commands.emplace(
+			auto [it, inserted] = _commands.try_emplace(
 				commandName, [handler = std::move(handler)](std::istream& stream)
 				{
 					TCommandData data;

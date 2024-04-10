@@ -24,8 +24,8 @@ const static std::unordered_map<UnitClass, std::string> UnitTypeLogString
 
 struct UnitDescription
 {
-    id_type id;
-    hp_type hp;
+    id_type id = 0;
+    hp_type hp = 0;
     param_type step_count = 1;
 };
 
