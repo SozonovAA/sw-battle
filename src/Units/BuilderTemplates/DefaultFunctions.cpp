@@ -16,19 +16,19 @@ std::shared_ptr<IUnitCommand> DefaultMarchMethod(std::shared_ptr<IUnit> uRef)
         return {};
     
     const auto marchPos = marchOpt.value();
-    const auto deltaPos = marchPos - currPos;
+    const auto [deltaX, deltaY] = marchPos - currPos;
 
-    if (std::abs(deltaPos._x) >= stepCount) {
-        res._x = stepCount * (std::signbit(deltaPos._x) ? -1 : 1);
+    if (std::abs(deltaX) >= stepCount) {
+        res._x = stepCount * (std::signbit(deltaX) ? -1 : 1);
     }
     else {
-        res._x = deltaPos._x;
+        res._x = deltaX;
     }
-    if (std::abs(deltaPos._y) >= stepCount) {
-        res._y = stepCount * (std::signbit(deltaPos._y) ? -1 : 1);
+    if (std::abs(deltaY) >= stepCount) {
+        res._y = stepCount * (std::signbit(deltaY) ? -1 : 1);
     }
     else {
-        res._y = deltaPos._y;
+        res._y = deltaY;
     }
     return std::make_shared<UnitCommand<MoveDescription>>(uRef->get_id(), MoveDescription{res._x, res._y});
 }
@@ -50,10 +50,10 @@ std::shared_ptr<IUnit> GetAtckTarget(const std::vector<std::shared_ptr<IUnit>>& 
 
 std::shared_ptr<UnitCommand<MeleeAttackDescription>> MeleeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map)
 {
-    const auto unitPosition = uRef->get_unit_position();
+    const auto [x, y] = uRef->get_unit_position();
     if( const auto &unitsAround = map->getUnitsAround(
-        unitPosition._x,
-        unitPosition._y,
+        x,
+        y,
         uRef->get_param_value("mRange")); !unitsAround.empty())
     {
         MeleeAttackDescription atcDescr {
@@ -68,24 +68,6 @@ std::shared_ptr<UnitCommand<MeleeAttackDescription>> MeleeAtcFunction(std::share
 std::shared_ptr<UnitCommand<RangeAttackDescription>> RangeAtcFunction(std::shared_ptr<IUnit> uRef, const std::shared_ptr<map::IMap<IUnit>> map)
 {
     const auto [x, y] = uRef->get_unit_position();
-    
-    // что бы потом не фильтровать по расстоянию, разбиваем задачу на атомарные
-    // for(int toRange = 2, rRange = uRef->get_param_value("rRange"); toRange <= rRange; ++toRange)
-    // {
-    //     if(const auto &unitsAround = map->getUnitsAround(
-    //         x, y,
-    //         toRange,
-    //         toRange); !unitsAround.empty())
-    //     {
-    //         RangeAttackDescription descr {
-    //                 GetAtckTarget(unitsAround)->get_id(),
-    //                 uRef->get_param_value("rRange"),
-    //                 static_cast<hp_type>(uRef->get_param_value("agility"))
-    //         };
-    //         return std::make_shared<UnitCommand<RangeAttackDescription>>(uRef->get_id(), descr);
-    //     }
-    // }
-
      if(const auto &unitsAround = map->getUnitsAround(
             x,
             y,

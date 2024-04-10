@@ -35,8 +35,8 @@ bool dead_handler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
     
     if(auto unit = gs.get_game_manager().GetUnitById(commandRes._id))
     {
-        const auto coord = unit->get_unit_position();
-        gs.get_map()->deleteUnit(coord._x, coord._y);
+        const auto [x, y] = unit->get_unit_position();
+        gs.get_map()->deleteUnit(x, y);
         res = true;
     }
     return res;
