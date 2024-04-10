@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)
 project(sw_battle_test)
 
 set(CMAKE_CXX_STANDARD 17)
-
+message("Added tests!")
 file(GLOB_RECURSE SOURCES src/*.cpp src/*.hpp)
 file(GLOB_RECURSE MAP_SOURCES ../src/Map/*.cpp)
 file(GLOB_RECURSE UNITS_SOURCES ../src/Units/*.cpp)
@@ -28,3 +28,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC src/)
 target_link_libraries(${PROJECT_NAME}
         PRIVATE gtest_main gtest)
 include(GoogleTest)
+
+gtest_discover_tests(${PROJECT_NAME} DISCOVERY_MODE PRE_TEST)

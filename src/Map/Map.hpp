@@ -64,7 +64,6 @@ public:
         return res;
     }
     
-    // Метод для возвращения всех объектов в радиусе определенного количества клеток вокруг юнита
     std::vector<std::shared_ptr<EntityT>>
     getUnitsAround(coord_type x, coord_type y, coord_type radius) const override
     {
