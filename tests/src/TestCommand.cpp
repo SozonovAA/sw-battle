@@ -50,40 +50,40 @@ TEST(command, defaultMarchTest)
         const Point expectPoint (1, 1);
         const auto moveCommand = defaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().getDescription<CmdType::MOVE>();
-        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
-        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+        EXPECT_EQ(moveDescr.deltax, expectPoint.x);
+        EXPECT_EQ(moveDescr.deltay, expectPoint.y);
     }
     {
         unit->setMarchPosition({4, 4});
         const Point expectPoint (-1, -1);
         const auto moveCommand = defaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().getDescription<CmdType::MOVE>();
-        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
-        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+        EXPECT_EQ(moveDescr.deltax, expectPoint.x);
+        EXPECT_EQ(moveDescr.deltay, expectPoint.y);
     }   
     {
         unit->setMarchPosition({5, 5});
         const Point expectPoint (0, 0);
         const auto moveCommand = defaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().getDescription<CmdType::MOVE>();
-        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
-        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+        EXPECT_EQ(moveDescr.deltax, expectPoint.x);
+        EXPECT_EQ(moveDescr.deltay, expectPoint.y);
     }
     {
         unit->setMarchPosition({4, 5});
         const Point expectPoint (-1, 0);
         const auto moveCommand = defaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().getDescription<CmdType::MOVE>();
-        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
-        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+        EXPECT_EQ(moveDescr.deltax, expectPoint.x);
+        EXPECT_EQ(moveDescr.deltay, expectPoint.y);
     }
     {
         unit->setMarchPosition({5, 4});
         const Point expectPoint (0, -1);
         const auto moveCommand = defaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().getDescription<CmdType::MOVE>();
-        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
-        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+        EXPECT_EQ(moveDescr.deltax, expectPoint.x);
+        EXPECT_EQ(moveDescr.deltay, expectPoint.y);
     }
 
     unit->setUnitPosition({-5, -5});
@@ -92,24 +92,24 @@ TEST(command, defaultMarchTest)
         const Point expectPoint (1, 1);
         const auto moveCommand = defaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().getDescription<CmdType::MOVE>();
-        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
-        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+        EXPECT_EQ(moveDescr.deltax, expectPoint.x);
+        EXPECT_EQ(moveDescr.deltay, expectPoint.y);
     }
     {
         unit->setMarchPosition({-6, -6});
         const Point expectPoint (-1, -1);
         const auto moveCommand = defaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().getDescription<CmdType::MOVE>();
-        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
-        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+        EXPECT_EQ(moveDescr.deltax, expectPoint.x);
+        EXPECT_EQ(moveDescr.deltay, expectPoint.y);
     }
     {
         unit->setMarchPosition({1000, -6});
         const Point expectPoint (1, -1);
         const auto moveCommand = defaultMarchMethod(unit);
         const auto moveDescr = moveCommand->execute().getDescription<CmdType::MOVE>();
-        EXPECT_EQ(moveDescr.delta_x, expectPoint._x);
-        EXPECT_EQ(moveDescr.delta_y, expectPoint._y);
+        EXPECT_EQ(moveDescr.deltax, expectPoint.x);
+        EXPECT_EQ(moveDescr.deltay, expectPoint.y);
     }
 }
 

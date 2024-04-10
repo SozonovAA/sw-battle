@@ -45,7 +45,7 @@ GameManager::unit_type GameManager::getUnitById(const units::id_type& id) const
 }
 void GameManager::setMarchForUnit(const units::id_type& id, const map::Point& marchAim)
 {
-    if(!_map->isCoordinateCorrect(marchAim._x, marchAim._y))
+    if(!_map->isCoordinateCorrect(marchAim.x, marchAim.y))
         throw std::runtime_error{"Uncorrect coordinate!"};
 
     if(auto it = _unitsStorage.find(id); it != _unitsStorage.end())

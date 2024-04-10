@@ -101,10 +101,10 @@ public:
         {
             for (coord_type j = y_min; j <= y_max; ++j)
             {
-                int distance_x = abs(static_cast<int>(i) - static_cast<int>(x)); 
-                int distance_y = abs(static_cast<int>(j) - static_cast<int>(y));
+                int distancex = abs(static_cast<int>(i) - static_cast<int>(x)); 
+                int distancey = abs(static_cast<int>(j) - static_cast<int>(y));
                 if (_grid[i][j] && !(x == i && y == j) && 
-                    (distance_x >= fromRadius || distance_y >= fromRadius) && 
+                    (distancex >= fromRadius || distancey >= fromRadius) && 
                     checkRadius(x, y, i, j, toRadius)
                 )
                 {

@@ -32,8 +32,8 @@ class LoggableUnit : public Unit
         {
                 _eventLog.log(io::MarchEnded{ 
                     getId(), 
-                    static_cast<uint32_t>(_coord._x), 
-                    static_cast<uint32_t>(_coord._y)})
+                    static_cast<uint32_t>(_coord.x), 
+                    static_cast<uint32_t>(_coord.y)})
                 ;
         }
         return Unit::process();
@@ -43,10 +43,10 @@ class LoggableUnit : public Unit
         Unit::setMarchPosition(aim);
         _eventLog.log(io::MarchStarted{ 
             getId(), 
-            static_cast<uint32_t>(_coord._x), 
-            static_cast<uint32_t>(_coord._y), 
-            static_cast<uint32_t>(_march_coord.value()._x), 
-            static_cast<uint32_t>(_march_coord.value()._y)}
+            static_cast<uint32_t>(_coord.x), 
+            static_cast<uint32_t>(_coord.y), 
+            static_cast<uint32_t>(_march_coord.value().x), 
+            static_cast<uint32_t>(_march_coord.value().y)}
         );
     }
 

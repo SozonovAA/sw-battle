@@ -10,8 +10,8 @@ static bool updateUnitPosition(std::shared_ptr<IUnit> unit, MoveDescription expe
 {
     bool res = false;
     const auto uPos1 = unit->getUnitPosition();
-    const auto newUPos1 = uPos1 + Point{expect.delta_x, expect.delta_y};
-    if(!map->moveUnit(uPos1._x, uPos1._y, newUPos1._x, newUPos1._y))
+    const auto newUPos1 = uPos1 + Point{expect.deltax, expect.deltay};
+    if(!map->moveUnit(uPos1.x, uPos1.y, newUPos1.x, newUPos1.y))
     {
         unit->setUnitPosition( newUPos1 );
         res = true;

@@ -17,10 +17,10 @@ bool spawnHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
     const auto descr = commandRes.getDescription<cmd::CmdType::SPAWN>();
     try {
         const auto unitPtr = std::any_cast<std::shared_ptr<units::IUnit>>(descr.unit);
-        if(const auto addRes = gs.getMap()->addUnit(descr.coord._x, descr.coord._y, unitPtr); 
+        if(const auto addRes = gs.getMap()->addUnit(descr.coord.x, descr.coord.y, unitPtr); 
             unitPtr && addRes == 0)
         {
-            unitPtr->setUnitPosition({descr.coord._x, descr.coord._y});
+            unitPtr->setUnitPosition({descr.coord.x, descr.coord.y});
             res = true;
         } 
         else if(addRes == -1)
@@ -87,7 +87,7 @@ bool undefHandler(const cmd::CmdDescription& commandRes, GameExecutor& gs)
 {
     throw std::runtime_error("Undefined command type!");
 }
-}
+} // namespace
 
 GameExecutor::handler_type GameExecutor::game_handlers = 
 {
