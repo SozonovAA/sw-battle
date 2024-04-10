@@ -8,85 +8,80 @@
 #include <IO/Commands/SpawnArcher.hpp>
 #include <IO/Commands/March.hpp>
 #include <IO/Commands/Wait.hpp>
-#include <IO/System/EventLog.hpp>
-#include <IO/EventLogs/MapCreated.hpp>
-#include <IO/EventLogs/UnitSpawned.hpp>
-#include <IO/EventLogs/MarchStarted.hpp>
-#include <IO/EventLogs/MarchEnded.hpp>
-#include <IO/EventLogs/UnitMoved.hpp>
-#include <IO/EventLogs/UnitDied.hpp>
-#include <IO/EventLogs/UnitAttacked.hpp>
-#include "GameManager/Command/CmdDescriptions.hpp"
-#include "GameManager/Command/IUnitCommand.hpp"
-#include "Units/Unit.hpp"
-#include "Units/UnitBuilder.hpp"
-#include "Map/Map.hpp"
-
+#include <IO/Commands/WaitPrintMap.hpp>
 #include <memory>
-#include <vector>
+
+#include "GameManager/GameManager.hpp"
+#include "GameManager/Executors/Default/GameExecutor.hpp"
+#include "GameManager/Executors/Loggable/LoggableGameExecutor.hpp"
+#include "Map/Coords.hpp"
+#include "Units/LoggableUnit.hpp"
+#include "Units/IUnit.hpp"
+#include "Map/Map.hpp"
+#include "Map/LoggableMap.hpp"
+#include "Units/BuilderTemplates/DefaultUnitsBuilders.hpp"
+#include "Units/UnitTypes.hpp"
 
 
-int main(int argc, char** argv)
+
+int main(int argc, char **argv)
 {
-	using namespace sw;
+    using namespace sw;
+    using namespace sw::mngr;
+    using namespace sw::map;
+    using namespace sw::units;
+    
+    
+    if (argc != 2) {
+    	throw std::runtime_error("Error: No file specified in command line argument");
+    }
+    
+    std::ifstream file(argv[1]);
+    if (!file) {
+    	throw std::runtime_error("Error: File not found - " + std::string(argv[1]));
+    }
 
-	
-	// if (argc != 2) {
-	// 	throw std::runtime_error("Error: No file specified in command line argument");
-	// }
-
-	// std::ifstream file(argv[1]);
-	// if (!file) {
-	// 	throw std::runtime_error("Error: File not found - " + std::string(argv[1]));
-	// }
-
-	// // Code for example...
-
-	// std::cout << "Commands:\n";
-	// io::CommandParser parser;
-	// parser.add<io::CreateMap>(
-	// 	[](auto command)
-	// 	{
-	// 		printDebug(std::cout, command);
-	// 	}).add<io::SpawnWarrior>(
-	// 	[](auto command)
-	// 	{
-	// 		printDebug(std::cout, command);
-	// 	}).add<io::SpawnArcher>(
-	// 	[](auto command)
-	// 	{
-	// 		printDebug(std::cout, command);
-	// 	}).add<io::March>(
-	// 	[](auto command)
-	// 	{
-	// 		printDebug(std::cout, command);
-	// 	}).add<io::Wait>(
-	// 	[](auto command)
-	// 	{
-	// 		printDebug(std::cout, command);
-	// 	});
-
-	// parser.parse(file);
-
-	// std::cout << "\n\nEvents:\n";
-
-	// EventLog eventLog;
-	// eventLog.listen<io::MapCreated>([](auto& event){ printDebug(std::cout, event); });
-	// eventLog.listen<io::UnitSpawned>([](auto& event){ printDebug(std::cout, event); });
-	// eventLog.listen<io::MarchStarted>([](auto& event){ printDebug(std::cout, event); });
-	// eventLog.listen<io::UnitMoved>([](auto& event){ printDebug(std::cout, event); });
-	// eventLog.listen<io::MarchEnded>([](auto& event){ printDebug(std::cout, event); });
-	// eventLog.listen<io::UnitAttacked>([](auto& event){ printDebug(std::cout, event); });
-	// eventLog.listen<io::UnitDied>([](auto& event){ printDebug(std::cout, event); });
-
-	// eventLog.log(io::MapCreated{ 10, 10 });
-	// eventLog.log(io::UnitSpawned{ 1, "Archer", 5, 3 });
-	// eventLog.log(io::UnitSpawned{ 2, "Warrior", 5, 3 });
-	// eventLog.log(io::MarchStarted{ 1, 5, 3, 7, 9 });
-	// eventLog.log(io::UnitMoved{ 1, 6, 4 });
-	// eventLog.log(io::UnitAttacked{ 1, 2, 5, 0 });
-	// eventLog.log(io::MarchEnded{ 1, 7, 9 });
-	// eventLog.log(io::UnitDied{ 1 });
-
-	return 0;
+    GameManager gm;
+    io::CommandParser parser;
+    std::shared_ptr<LoggableMap<units::IUnit>> map;
+    parser.add<io::CreateMap>(
+    	[&gm, &map](auto command) mutable
+    	{
+            map = gm.createMap<LoggableMap<units::IUnit>, LoggableGameExecutor>(command.height, command.width);
+    	}).add<io::SpawnWarrior>(
+    	[&gm](auto command)
+    	{
+            UnitDescription ud1{command.unitId, static_cast<hp_type>(command.hp)};
+            Point coord{static_cast<Point::coord_type>(command.x), static_cast<Point::coord_type>(command.y)};
+            WarriorDescription descr{command.strength, 1};
+            gm.spawnUnit<LoggableUnit>(descr, ud1, coord);
+    	}).add<io::SpawnArcher>(
+    	[&gm](auto command)
+    	{
+            UnitDescription ud1{command.unitId, static_cast<hp_type>(command.hp)};
+            Point coord{static_cast<Point::coord_type>(command.x), static_cast<Point::coord_type>(command.y)};
+            ArcherDescription descr{command.strength, 1, command.range, command.agility};
+            gm.spawnUnit<LoggableUnit>(descr, ud1, coord);
+    	}).add<io::March>(
+    	[&gm](auto command)
+    	{
+            Point coord{static_cast<Point::coord_type>(command.targetX), static_cast<Point::coord_type>(command.targetY)};
+            gm.setMarchForUnit(command.unitId, coord);
+    	}).add<io::Wait>(
+    	[&gm](auto command)
+    	{
+            gm.waitGameTicks(command.ticks);
+    	}).add<io::WaitPrintMap>(
+    	[&gm, &map](auto command)
+    	{   
+            for(unsigned int i = 0; i < command.ticks; ++i)
+            {
+                gm.waitOneGameTick();
+                std::cout << *map;
+            }
+    	});;
+    
+    parser.parse(file);
+    
+    return 0;
 }

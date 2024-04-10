@@ -5,10 +5,10 @@ namespace sw::mngr::cmd {
 class IUnitCommand
 {
     public:
-    virtual CmdDescription execute() const = 0;
+    [[nodiscard]] virtual CmdDescription execute() const = 0;
     virtual ~IUnitCommand() = default;
     protected:   
-    IUnitCommand(unsigned id) : id_(id) {};
+    explicit IUnitCommand(unsigned id) : id_(id) {};
     const unsigned id_;
 };
 
@@ -17,13 +17,13 @@ class UnitCommand : public IUnitCommand
 {
 public:
     using description_type = DescrT;
-    UnitCommand(unsigned id, const description_type& descr) : IUnitCommand(id), descr_{descr} {};
+    UnitCommand(unsigned id, const description_type& descr) : IUnitCommand(id), _descr{descr} {};
     
-    virtual CmdDescription execute() const override
+    [[nodiscard]] CmdDescription execute() const override
     {
-        return CmdDescription(IUnitCommand::id_, descr_);
+        return CmdDescription(IUnitCommand::id_, _descr);
     }
 private:
-    const description_type descr_;
+    const description_type _descr;
 };
 } //namespace sw::mngr::cmd

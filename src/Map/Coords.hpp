@@ -1,20 +1,42 @@
 #pragma once
+
 #include <string>
 #include <ostream>
+
 namespace sw::map {
 
-struct Point {
-    unsigned x_;
-    unsigned y_;
+struct Point
+{
+    using coord_type = int;
+    coord_type _x;
+    coord_type _y;
+    
+    Point() : _x(0), _y(0) {}
+    Point(coord_type x_val, coord_type y_val) : _x(x_val), _y(y_val) {}
 
-    Point() : x_(0), y_(0) {}
+    Point operator+(const Point& other) const
+    {
+        return Point(_x + other._x, _y + other._y);
+    }
 
-    Point(unsigned x_val, unsigned y_val) : x_(x_val), y_(y_val) {}
+    Point operator-(const Point& other) const
+    {
+        return Point(_x - other._x, _y - other._y);
+    }
 
-    friend std::ostream& operator<<(std::ostream& os, const Point& point) {
-        os << "Point: (" << point.x_ << ", " << point.y_ << ")";
+    bool operator==(const Point& other) const {
+        return _x == other._x && _y == other._y;
+    }
+
+    bool operator!=(const Point& other) const {
+        return !(*this == other);
+    }
+    
+    friend std::ostream &operator<<(std::ostream &os, const Point &point)
+    {
+        os << "Point: (" << point._x << ", " << point._y << ")";
         return os;
     }
 };
-	
+    
 } // namespace sw::map
