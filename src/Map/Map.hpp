@@ -114,6 +114,12 @@ public:
         }
         return units;
     }
+
+    bool isCoordinateCorrect(const coord_type& x, const coord_type& y) const noexcept override
+    {
+        return !(x >= _rows || y >= _cols);
+    }
+    
 protected:
     const coord_type _rows;
     const coord_type _cols;
