@@ -5,7 +5,6 @@
 #include "../IO/EventLogs/MarchEnded.hpp"
 #include "../IO/System/PrintDebug.hpp"
 #include "../IO/System/EventLog.hpp"
-#include <_types/_uint32_t.h>
 
 namespace sw::units {
 class LoggableUnit : public Unit
