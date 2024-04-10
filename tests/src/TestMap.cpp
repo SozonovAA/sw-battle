@@ -1,11 +1,26 @@
 #include <algorithm>
 #include <gtest/gtest.h>
-#include "../../src/Map/Map.hpp"
+#include "../../src/Map/LoggableMap.hpp"
 #include "../../src/Units/Unit.hpp"
 
 namespace sw::map::test {
 using UnitBuilderT = units::UnitBuilder<units::UnitClass::WAR, units::Unit>;
 UnitBuilderT ub;
+TEST(map, check_radiusTest)
+{
+    EXPECT_EQ(check_radius(0, 0, 2, 2, 2), false);
+    
+    EXPECT_EQ(check_radius(0, 0, 3, 4, 5), true);
+    EXPECT_EQ(check_radius(0, 0, 5, 0, 5), true);
+    EXPECT_EQ(check_radius(0, 0, 0, 0, 5), true);
+
+    EXPECT_EQ(check_radius(0, 0, 0, 5, 5), true);
+    EXPECT_EQ(check_radius(0, 0, 5, 0, 5), true);
+
+    EXPECT_EQ(check_radius(0, 0, 6, 0, 5), false);
+    EXPECT_EQ(check_radius(0, 0, 3, 4, 3), false);
+}
+
 // Тест для метода addUnit: добавление юнита в свободную клетку
 TEST(map, testAddUnitToEmptyCell)
 {
@@ -102,7 +117,7 @@ TEST(map, testGetUnitsAround)
 TEST(map, testGetUnitsAroundFromTo)
 {
     // Создание карты размером 5x5
-    Map<units::IUnit> map(5, 5);
+    LoggableMap<units::IUnit> map(5, 5);
 
     // Создание и добавление юнитов на карту
     const std::shared_ptr<units::IUnit> unit1 = ub.create_unit({1, 0});
@@ -128,8 +143,7 @@ TEST(map, testGetUnitsAroundFromTo)
     }
     {
         const auto &res = map.getUnitsAround(2, 2, 2, 2);
-        EXPECT_EQ(res.size(), 2);
-        EXPECT_TRUE(std::find(res.begin(), res.end(), unit3) != res.end());
+        EXPECT_EQ(res.size(), 1);
         EXPECT_TRUE(std::find(res.begin(), res.end(), unit2) != res.end());
     }
     {

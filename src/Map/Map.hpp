@@ -10,13 +10,15 @@ template<class EntityT>
 class Map : public IMap<EntityT>
 {
 public:
+    using entity_type = EntityT;
     using grid_type = std::vector<std::vector<std::shared_ptr<EntityT>>>;
-    Map(unsigned rows, unsigned cols) : _rows(rows), _cols(cols)
+
+    Map(coord_type rows, coord_type cols) : _rows(rows), _cols(cols)
     {
         _grid = grid_type(rows, std::vector<std::shared_ptr<EntityT>>(cols, nullptr));
     }
     
-    int addUnit(unsigned x, unsigned y, std::shared_ptr<EntityT> unit) override
+    int addUnit(coord_type x, coord_type y, std::shared_ptr<EntityT> unit) override
     {
         if (x >= _rows || y >= _cols)
             return -1;
@@ -28,7 +30,7 @@ public:
         return 0;
     }
     
-    std::shared_ptr<EntityT> getUnit(unsigned x, unsigned y) const override
+    std::shared_ptr<EntityT> getUnit(coord_type x, coord_type y) const override
     {
         if (x >= _rows || y >= _cols)
             return nullptr;
@@ -36,7 +38,7 @@ public:
         return _grid[x][y];
     }
     
-    int moveUnit(unsigned fromX, unsigned fromY, unsigned toX, unsigned toY) override
+    int moveUnit(coord_type fromX, coord_type fromY, coord_type toX, coord_type toY) override
     {
         if (fromX >= _rows || fromY >= _cols || toX >= _rows || toY >= _cols)
             return -1;
@@ -52,7 +54,7 @@ public:
     }
 
 
-    std::shared_ptr<EntityT> deleteUnit(unsigned x, unsigned y) override
+    std::shared_ptr<EntityT> deleteUnit(coord_type x, coord_type y) override
     {
         if (x >= _rows || y >= _cols)
             return {};
@@ -64,19 +66,19 @@ public:
     
     // Метод для возвращения всех объектов в радиусе определенного количества клеток вокруг юнита
     std::vector<std::shared_ptr<EntityT>>
-    getUnitsAround(unsigned x, unsigned y, unsigned radius) const override
+    getUnitsAround(coord_type x, coord_type y, coord_type radius) const override
     {
         std::vector<std::shared_ptr<EntityT>> units;
-        unsigned x_min = std::max(0, static_cast<int>(x - radius));
-        unsigned x_max = std::min(_rows - 1, x + radius);
-        unsigned y_min = std::max(0, static_cast<int>(y - radius));
-        unsigned y_max = std::min(_cols - 1, y + radius);
+        coord_type x_min = std::max(0, static_cast<int>(x - radius));
+        coord_type x_max = std::min(_rows - 1, x + radius);
+        coord_type y_min = std::max(0, static_cast<int>(y - radius));
+        coord_type y_max = std::min(_cols - 1, y + radius);
         
-        for (unsigned i = x_min; i <= x_max; ++i)
+        for (coord_type i = x_min; i <= x_max; ++i)
         {
-            for (unsigned j = y_min; j <= y_max; ++j)
+            for (coord_type j = y_min; j <= y_max; ++j)
             {
-                if (!(x == i && y == j) && _grid[i][j])
+                if (!(x == i && y == j) && _grid[i][j] && check_radius(x, y, i, j, radius))
                     units.push_back(_grid[i][j]);
             }
         }
@@ -85,25 +87,27 @@ public:
     }
     
     std::vector<std::shared_ptr<EntityT>>
-    getUnitsAround(unsigned x, unsigned y, unsigned fromRadius, unsigned toRadius) const override
+    getUnitsAround(coord_type x, coord_type y, coord_type fromRadius, coord_type toRadius) const override
     {
         std::vector<std::shared_ptr<EntityT>> units;
         if (fromRadius > toRadius || toRadius <= 0)
             return units;
 
-        unsigned x_min = std::max(0, static_cast<int>(x - toRadius));
-        unsigned x_max = std::min(_rows - 1, x + toRadius);
-        unsigned y_min = std::max(0, static_cast<int>(y - toRadius));
-        unsigned y_max = std::min(_cols - 1, y + toRadius);
+        coord_type x_min = std::max(0, static_cast<int>(x - toRadius));
+        coord_type x_max = std::min(_rows - 1, x + toRadius);
+        coord_type y_min = std::max(0, static_cast<int>(y - toRadius));
+        coord_type y_max = std::min(_cols - 1, y + toRadius);
 
-        for (unsigned i = x_min; i <= x_max; ++i)
+        for (coord_type i = x_min; i <= x_max; ++i)
         {
-            for (unsigned j = y_min; j <= y_max; ++j)
+            for (coord_type j = y_min; j <= y_max; ++j)
             {
-                // Проверка, что расстояние до текущей клетки не меньше fromRadius
                 int distance_x = abs(static_cast<int>(i) - static_cast<int>(x)); 
                 int distance_y = abs(static_cast<int>(j) - static_cast<int>(y));
-                if (_grid[i][j] && !(x == i && y == j) && (distance_x >= fromRadius || distance_y >= fromRadius))
+                if (_grid[i][j] && !(x == i && y == j) && 
+                    (distance_x >= fromRadius || distance_y >= fromRadius) && 
+                    check_radius(x, y, i, j, toRadius)
+                )
                 {
                     units.push_back(_grid[i][j]);
                 }
@@ -112,8 +116,8 @@ public:
         return units;
     }
 protected:
-    const unsigned _rows;
-    const unsigned _cols;
+    const coord_type _rows;
+    const coord_type _cols;
     
     grid_type _grid;
 };

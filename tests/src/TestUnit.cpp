@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include <memory>
 #include "../../src/Map/Map.hpp"
+#include "../../src/Map/LoggableMap.hpp"
 #include "../../src/Units/BuilderTemplates/DefaultUnitsBuilders.hpp"
 
 namespace sw::units::test {
@@ -281,15 +282,13 @@ TEST(unit, archerFullTest)
 
         auto com = unit0->process();
         auto cmdDescr = com->execute();
-        EXPECT_EQ(cmdDescr._type, CmdType::R_ATCK);
-        RangeAttackDescription expect{1, rRange, static_cast<hp_type>(agility)};
-        EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::R_ATCK>());
-        EXPECT_EQ(cmdDescr.get_description<CmdType::R_ATCK>(), expect);
+        EXPECT_EQ(cmdDescr._type, CmdType::SKIP);
+        EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::SKIP>());
 
     }
 
     {
-        std::shared_ptr<Map<units::IUnit>> map = std::make_shared<Map<IUnit>>(10, 10);
+        std::shared_ptr<LoggableMap<units::IUnit>> map = std::make_shared<LoggableMap<IUnit>>(10, 10);
 
         auto unit0 = ArcherBuilder(
             ArcherDescription{str, mRange, agility, rRange}, map).create_unit(ud0);
@@ -316,27 +315,19 @@ TEST(unit, archerFullTest)
 
             UpdateUnitPosition(unit0, cmdDescr.get_description<CmdType::MOVE>(), map);
         }
+        std::cout << *map;
         
         com = unit0->process();
         {
             auto cmdDescr = com->execute();
-            EXPECT_EQ(cmdDescr._type, CmdType::R_ATCK);
-            RangeAttackDescription expect{1, rRange, static_cast<hp_type>(agility)};
-            EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::R_ATCK>());
-            EXPECT_EQ(cmdDescr.get_description<CmdType::R_ATCK>(), expect);
-        }
-
-        unit1->set_march_position(_0);
-        com = unit1->process();
-        {
-            auto cmdDescr = com->execute();
             EXPECT_EQ(cmdDescr._type, CmdType::MOVE);
-            MoveDescription expect{-1, -1};
+            MoveDescription expect{1, 1};
             EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::MOVE>());
             EXPECT_EQ(cmdDescr.get_description<CmdType::MOVE>(), expect);
 
-            UpdateUnitPosition(unit1, cmdDescr.get_description<CmdType::MOVE>(), map);
+            UpdateUnitPosition(unit0, cmdDescr.get_description<CmdType::MOVE>(), map);
         }
+        std::cout << *map;
 
         com = unit0->process();
         {
@@ -346,6 +337,8 @@ TEST(unit, archerFullTest)
             EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::R_ATCK>());
             EXPECT_EQ(cmdDescr.get_description<CmdType::R_ATCK>(), expect);
         }        
+
+        unit1->set_march_position({4, 2});
         com = unit1->process();
         {
             auto cmdDescr = com->execute();
@@ -355,7 +348,29 @@ TEST(unit, archerFullTest)
             EXPECT_EQ(cmdDescr.get_description<CmdType::MOVE>(), expect);
 
             UpdateUnitPosition(unit1, cmdDescr.get_description<CmdType::MOVE>(), map);
+        }
+        std::cout << *map;
+
+        com = unit0->process();
+        {
+            auto cmdDescr = com->execute();
+            EXPECT_EQ(cmdDescr._type, CmdType::R_ATCK);
+            RangeAttackDescription expect{1, rRange, static_cast<hp_type>(agility)};
+            EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::R_ATCK>());
+            EXPECT_EQ(cmdDescr.get_description<CmdType::R_ATCK>(), expect);
         }        
+        std::cout << *map;
+        com = unit1->process();
+        {
+            auto cmdDescr = com->execute();
+            EXPECT_EQ(cmdDescr._type, CmdType::MOVE);
+            MoveDescription expect{0, -1};
+            EXPECT_NO_THROW(auto d = cmdDescr.get_description<CmdType::MOVE>());
+            EXPECT_EQ(cmdDescr.get_description<CmdType::MOVE>(), expect);
+
+            UpdateUnitPosition(unit1, cmdDescr.get_description<CmdType::MOVE>(), map);
+        }        
+        std::cout << *map;
         com = unit1->process();
         {
             auto cmdDescr = com->execute();
